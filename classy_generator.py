@@ -43,7 +43,7 @@ class ClassyGenerator:
 		status = []
 		for rarity in self.rarities:
 			status.append(self.set_content(True, self.armour, rarity))
-			status.append(self.set_content(True, self.armour, rarity, None, 'Shield', True)) # last True => don't grab no requirement items
+			status.append(self.set_content(True, self.armour, rarity, None, 'Shield'))
 		save_file = open(filename, 'w')
 		save_file.write(self.content.expandtabs(self.tab_len))
 		save_file.close()
@@ -63,14 +63,14 @@ class ClassyGenerator:
 	def display_items(self, items_list):
 		return (' ').join('"{0}"'.format(item) for item in items_list)
 
-	def set_content(self, lead, database, rarities = rarities, requirements = None, item_class = '', strict = False):
+	def set_content(self, lead, database, rarities = rarities, requirements = None, item_class = ''):
 		if requirements is None:
 			requirements = database.get_requirements()
 		if isinstance(rarities, str):
 			rarities = [rarities]
 		for rarity in rarities:
 			for requirement in requirements:
-				items = self.display_items(database.get_items_by_requirement(requirement, item_class, strict))
+				items = self.display_items(database.get_items_by_requirement(requirement, item_class))
 				if not items:
 					return 1
 				template = self.display_lead(lead) + 3 * ' '
