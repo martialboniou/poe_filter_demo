@@ -17,7 +17,7 @@ class PoEItemData():
 	__default_url = "http://www.pathofexile.com/item-data"
 	__default_headers = {}
 	__default_headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"
-	__attribute_list = ['str/int', 'str/dex', 'int/dex', 'str', 'dex', 'int']
+	__attribute_list = ['str', 'dex', 'int', 'str/int', 'str/dex', 'int/dex']
 	no_requirement_tag = 'ALL'
 	__classes = set([]) # all classnames encountered
 	__requirements = [x.upper() for x in __attribute_list]
@@ -73,18 +73,22 @@ class PoEItemData():
 				continue
 
 			attribute_vlist = [] # list of all attribute headers (ex: 'Req Int'...)
-			attr_pos = defaultdict(list)
+			attr_pos = defaultdict(list) # attribute -> requirement position
+			related_attr_pos = defaultdict(list) # attribute -> other requirement
 			for a,v in table_requirements.items():
 				attr_pos[a] = [table_header.index(rq_v) for rq_v in v] # position in header
 				attribute_vlist.extend(v)
 				attribute_vlist = list(set(attribute_vlist)) # remove dup
-			attribute_plist = [table_header.index(rq_v) for rq_v in attribute_vlist] # position list in header
+			attribute_plist = [table_header.index(rq_v) for rq_v in attribute_vlist] # all requirements in header
+			for a, v in table_requirements.items():
+				related_attr_pos[a] = [aa for aa in attribute_plist if aa not in attr_pos[a]]
 
 			for data in table_data:
 				name = data[p_name]
 				for attr in self.__attribute_list:
 					if all(int(data[pos]) > 0 for pos in attr_pos[attr]):
-						self.rq_tables[attr.upper()][table_class].append(name)
+						if all(int(data[pos]) == 0 for pos in related_attr_pos[attr]):
+							self.rq_tables[attr.upper()][table_class].append(name)
 						break
 					elif all(int(data[pos]) == 0 for pos in attribute_plist):
 						self.rq_tables[self.no_requirement_tag][table_class].append(name)
