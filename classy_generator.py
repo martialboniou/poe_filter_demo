@@ -36,7 +36,7 @@ class ClassyGenerator:
 
 	def __init__(self):
 		self.armour = PoEItemData('armour')
-		self.weapon = PoEItemData('weapon')
+		# self.weapon = PoEItemData('weapon')
 
 	def run(self, filename = __default_output_filename):
 		self.content = ''
