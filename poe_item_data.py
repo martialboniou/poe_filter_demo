@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from sys import exit
 from collections import defaultdict
 from urllib.request import Request, urlopen
 from urllib.error import URLError
@@ -14,8 +13,7 @@ class PoEItemData():
 	__attribute_list = ['str', 'dex', 'int', 'str/int', 'str/dex', 'int/dex']
 	__attribue_map = {'armour': {'str': 'Armour', 'dex': 'Evasion Rating', 'int': 'Energy Shield'},
 			'weapon':{'str': 'Req_Str', 'dex': 'Req_Dex', 'int': 'Req_Int'}}
-	no_requirement_tag = 'ALL'
-	__classes = set([]) # all classnames encountered
+	__name_attribute = 'Name'
 	__requirements = [x.upper() for x in __attribute_list]
 	__rq_tables_generated = False # FIXME: bad design
 
@@ -23,6 +21,7 @@ class PoEItemData():
 		self.tables = defaultdict(list) # Class -> Row
 		self.rq_tables = defaultdict(lambda : defaultdict(list)) # Req -> Class -> Name
 		self.__fetch_data(item_family)
+		self.__classes = set([]) # all classnames encountered
 		self.__generate_tables()
 		if item_family == 'armour':
 			self.__generate_rq_tables()
@@ -55,7 +54,7 @@ class PoEItemData():
 
 			table_class = str(table.parent.findPrevious('h1').contents[0])
 			self.__classes.add(table_class)  # remember all classnames
-			table_rows  = parse_rows(rows) # implicits are concatenated
+			table_rows = parse_rows(rows) # implicits are concatenated
 			self.tables[table_class] = table_rows
 
 	def __generate_rq_tables(self):
@@ -68,32 +67,60 @@ class PoEItemData():
 			exit(1)
 
 		for table_class, table in self.tables.items():
-			table_header, table_data = table[0], table[1:]
-			try:
-				p_name = table_header.index('Name')
-			except ValueError as e:
-				print('An error occured while fetching Name in the table header of {classname}'.format(classname=table_class))
+			# - HEADER
+			# position of name
+			p_name = self.__get_name_position(table_class)
+			if p_name is None:
 				continue
-
-			attribute_vlist = [] # list of all attribute headers (ex: 'Energy Shield' or 'Req Int'...)
-			attr_pos = defaultdict(list) # attribute -> requirement position
-			related_attr_pos = defaultdict(list) # attribute -> other requirement
+			# attribute (ex: 'Energy Shield' or 'Req Int'...)
+			attribute_vlist = []
+			# attributs -> position of requirements
+			attr_pos = defaultdict(list)
+			# attributs -> position of related requirements
+			related_attr_pos = defaultdict(list)
 			for a,v in table_requirements.items():
-				attr_pos[a] = [table_header.index(rq_v) for rq_v in v] # position in header
+				attr_pos[a] = [table[0].index(rq_v) for rq_v in v]
 				attribute_vlist.extend(v)
 				attribute_vlist = list(set(attribute_vlist)) # remove dup
-			attribute_plist = [table_header.index(rq_v) for rq_v in attribute_vlist] # all requirements in header
+			# all requirements in header
+			attribute_plist = [table[0].index(rq_v) for rq_v in attribute_vlist]
 			for a, v in table_requirements.items():
 				related_attr_pos[a] = [aa for aa in attribute_plist if aa not in attr_pos[a]]
-
-			for data in table_data:
+			# - DATA
+			for data in table[1:]:
 				name = data[p_name]
 				for attr in self.__attribute_list:
 					if all(int(data[pos]) > 0 for pos in attr_pos[attr]):
 						if all(int(data[pos]) == 0 for pos in related_attr_pos[attr]):
 							self.rq_tables[attr.upper()][table_class].append(name)
-						break
+							break
 			self.__rq_tables_generated = True
+
+	def get_items(self, item_class = ''):
+		if not item_class:
+			item_classes = self.get_classes()
+		else:
+			item_classes = [ item_class ]
+		res = []
+		for i_class in item_classes:
+			res.extend(self.__get_items(i_class))
+		return res
+
+	def __get_items(self, item_class):
+		p = self.__get_name_position(item_class)
+		if p is not None:
+			return [x[p] for x in self.tables[item_class][1:]]
+		return []
+
+	def __get_name_position(self, item_class):
+		res = None
+		attribute=self.__name_attribute
+		table_header = self.tables[item_class][0]
+		try:
+			res = table_header.index(attribute)
+		except ValueError as e:
+			print('An error occured while fetching {attribute} in the table header of {classname}'.format(attribute=attribute, classname=item_class))
+		return res
 
 	def get_items_by_requirement(self, requirement, item_class = ''):
 		if not self.__rq_tables_generated:
@@ -113,7 +140,8 @@ class PoEItemData():
 
 	def __get_variable_by_pattern(self, var, pattern = ''):
 		if pattern:
-			return re_list_filter(pattern, var)
+			return None
+			# return re_list_filter(pattern, var)
 		return var
 
 	def get_requirements(self, pattern = ''):

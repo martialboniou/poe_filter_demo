@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # python3 -m pip install BeautifulSoup4
 from poe_item_data import PoEItemData
+from poe_utils import compress_names
+from collections import defaultdict
+
+output_filename = "Partial_Classy.filter"
 
 class Color:
 	def __init__(self, r, g, b, a = None):
@@ -36,7 +40,9 @@ class ClassyGenerator:
 
 	def __init__(self):
 		self.armour = PoEItemData('armour')
-		# self.weapon = PoEItemData('weapon')
+		self.weapon = PoEItemData('weapon')
+		self.base_types = self.armour.get_items()
+		self.base_types.extend(self.weapon.get_items())
 
 	def run(self, filename = __default_output_filename):
 		self.content = ''
@@ -66,27 +72,41 @@ class ClassyGenerator:
 	def set_content(self, lead, database, rarities = rarities, requirements = None, item_class = ''):
 		if requirements is None:
 			requirements = database.get_requirements()
+
+		# names' compression
+		items_to_display = defaultdict(str)
+		for requirement in requirements:
+			items = database.get_items_by_requirement(requirement, item_class)
+			if items == []:
+				items_to_display[requirement] = ''
+			else:
+				if not item_class:
+					items = compress_names(items, self.base_types)
+				else:
+					items = compress_names(items, database.get_items(item_class))
+			items_to_display[requirement] = self.display_items(items)
+
+		# template assignment
+		template = self.display_lead(lead) + 3 * ' '
+		if not item_class:
+			template += self.__armor_template
+		else:
+			template += self.__class_template
+
 		if isinstance(rarities, str):
 			rarities = [rarities]
 		for rarity in rarities:
 			for requirement in requirements:
-				items = self.display_items(database.get_items_by_requirement(requirement, item_class))
-				if not items:
-					return 1
-				template = self.display_lead(lead) + 3 * ' '
-				if not item_class:
-					template += self.__armor_template
-				else:
-					template += self.__class_template
-				self.content += template.format( requirement = requirement
-																			 , the_class = item_class
-																			 , rarity = rarity.capitalize()
-																			 , items = items
-																			 , coloring = str(self.colors[rarity])
-																			 )
+				if items_to_display[requirement]:
+					self.content += template.format( requirement = requirement
+																				 , the_class = item_class
+																				 , rarity = rarity.capitalize()
+																				 , items = items_to_display[requirement]
+																				 , coloring = str(self.colors[rarity])
+																				 )
 		return 0
 
 if __name__ == '__main__':
 	classy = ClassyGenerator()
-	status = classy.run('Classy Item Filter')
+	status = classy.run(output_filename)
 	exit(status)
