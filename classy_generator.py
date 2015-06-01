@@ -37,15 +37,17 @@ class ClassyGenerator:
 	rarities = ['normal', 'magic']
 	tab_len = 4
 	comment_prefix = "### {text}\n\n"
+	__filter = None
 
-	def __init__(self):
+	def __init__(self, filter = None):
 		self.armour = PoEItemData('armour')
-		self.weapon = PoEItemData('weapon')
 		self.base_types = self.armour.get_items()
-		self.base_types.extend(self.weapon.get_items())
-		for item_class in ['jewelry', 'currency']:
-			self.base_types.extend(PoEItemData(item_class).get_items())
-		self.base_types.extend(['Arena Pit']) # temporary: maps, maraketh weapons...
+		self.__dict = self.__filter
+		self.__filter = filter
+		if not self.is_filter('antnee'): # no warranty in weapon/map precedence
+			for item_class in ['weapon', 'jewelry', 'currency']:
+				self.base_types.extend(PoEItemData(item_class).get_items())
+			self.base_types.extend(['Arena Pit']) # temporary: maps, maraketh weapons...
 
 	def run(self, filename = __default_output_filename):
 		self.content = ''
@@ -59,6 +61,11 @@ class ClassyGenerator:
 		if all(x == 0 for x in status):
 			return 0
 		return 1
+
+	def is_filter(self, name):
+		if self.__filter is not None:
+			return self.__filter == name
+		return False
 
 	def display_lead(self, blink_bool):
 		if blink_bool:
@@ -78,16 +85,13 @@ class ClassyGenerator:
 
 		# names' compression
 		items_to_display = defaultdict(str)
+		base_types = self.base_types if not item_class else database.get_items(item_class)
 		for requirement in requirements:
+			items_to_display[requirement] = ''
 			items = database.get_items_by_requirement(requirement, item_class)
-			if not items:
-				items_to_display[requirement] = ''
-			else:
-				if not item_class:
-					items = compress_names(items, self.base_types)
-				else:
-					items = compress_names(items, database.get_items(item_class))
-			items_to_display[requirement] = self.display_items(items)
+			if items:
+				base_types = [bt for bt in base_types if bt not in items]
+				items_to_display[requirement] = self.display_items(compress_names(items, base_types))
 
 		# template assignment
 		template = self.display_lead(lead) + 3 * ' '
@@ -110,6 +114,7 @@ class ClassyGenerator:
 		return 0
 
 if __name__ == '__main__':
-	classy = ClassyGenerator()
+	# generate code for the Antnee's Classy Filter
+	classy = ClassyGenerator('antnee')
 	status = classy.run(output_filename)
 	exit(status)

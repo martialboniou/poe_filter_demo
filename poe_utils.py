@@ -2,6 +2,13 @@
 # python3 -m pip install BeautifulSoup4
 from bs4 import BeautifulSoup, NavigableString, CData
 import re
+import sys
+
+def unique_sorter(item):
+	return (len(item[0]), item)
+
+def occurence_sorter(item):
+	return (item[0], item)
 
 def parse_multiline(element, poe_implicit_split = False):
 	""" Get data from a row & regroup tag-separated
@@ -62,7 +69,7 @@ def shorten_name(n):
 	"""
 	if n[-2:] == "'s":
 		return n[:-2]
-	if n[-1] == "s":
+	if n[-1] == "s" and n[-3:-1] not in ["ou", "ri"]: # + heuristic for readability
 		return n[:-1]
 	return None
 
@@ -99,12 +106,12 @@ def find_unique_matchers(n, conflict_ns):
 			matches.append(token)
 	if not matches:
 		return n
+	matches.sort(key=len)
 	return matches
 
-def compress_names(ns, all_ns):
+def compress_names(ns, other_ns):
 	comp_ns = []
 	unique_ns = [] # list -> list
-	other_ns = [n for n in all_ns if not n in ns]
 	for n in ns:
 		uniques = find_unique_matchers(n, other_ns)
 		if isinstance(uniques, str):
@@ -112,11 +119,13 @@ def compress_names(ns, all_ns):
 		else:
 			unique_ns.append(uniques)
 	tok_ns = []
+	unique_ns.sort(key=unique_sorter)
+	occ_tok_ns = []
 	for u in unique_ns:
 		occ, token = 1, ''
 		max_occ = len(u)
 		l_limit = max([len(x) for x in u])
-		if any(x in tok_ns for x in u):
+		if any(w for w in occ_tok_ns if w[1] in u):
 			continue # jump if it contains the best candidate
 		for t in u:
 			occ_t = len([sub for sub in unique_ns if t in sub])
@@ -129,6 +138,8 @@ def compress_names(ns, all_ns):
 				occ = occ_t
 		if not token:
 			token = u[0] # first by default
-		tok_ns.append(token)
-	comp_ns.extend(list(set(tok_ns)))
-	return comp_ns
+		occ_tok_ns.append([occ, token])
+	occ_tok_ns.sort(key=occurence_sorter, reverse=True) # [(occurence, item)] -> sorted [item]
+	tok_ns = [x[-1] for x in occ_tok_ns]
+	tok_ns.extend(comp_ns)
+	return tok_ns
