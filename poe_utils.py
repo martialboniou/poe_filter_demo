@@ -51,11 +51,6 @@ def tokenize_name(n):
 	return n.split() # default = whitespace
 
 def match_name(pattern, n):
-	if pattern == "Nubuck":
-		if re.match(".*({pattern}).*".format(pattern=pattern), n) is not None:
-			print("essai: "+str(n))
-			print("test: "+str(re.match(".*({pattern}).*".format(pattern=pattern), n) is not None))
-
 	match = re.match(".*({pattern}).*".format(pattern=pattern), n) is not None
 	return match
 

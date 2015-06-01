@@ -41,12 +41,10 @@ class ClassyGenerator:
 	def __init__(self):
 		self.armour = PoEItemData('armour')
 		self.weapon = PoEItemData('weapon')
-		self.jewelry = PoEItemData('jewelry')
-		self.currency = PoEItemData('currency')
 		self.base_types = self.armour.get_items()
 		self.base_types.extend(self.weapon.get_items())
-		self.base_types.extend(self.jewelry.get_items())
-		self.base_types.extend(self.currency.get_items())
+		for item_class in ['jewelry', 'currency']:
+			self.base_types.extend(PoEItemData(item_class).get_items())
 		self.base_types.extend(['Arena Pit']) # temporary: maps, maraketh weapons...
 
 	def run(self, filename = __default_output_filename):
