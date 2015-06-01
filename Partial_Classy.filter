@@ -1,31 +1,31 @@
 Show   #Gear - STR Armor
     Rarity Normal
-    BaseType "Iron Gauntlets" "Plated Gauntlets" "Bronze Gauntlets" "Steel Gauntlets" "Antique Gauntlets" "Ancient Gauntlets" "Vaal Gauntlets" "Titan Gauntlets" "Plate Vest" "Copper Plate" "War Plate" "Full Plate" "Arena Plate" "Bronze Plate" "Battle Plate" "Sun Plate" "Golden Plate" "Crusader Plate" "Glorious Plate" "Iron Hat" "Reaver Helmet" "Siege Helmet" "Samite Helmet" "Colosseum" "Tower" "Astral" "Close" "Greaves" "Chestplate" "Majestic" "Burgonet" "Goliath" "Cone" "Gladiator" "Barbute" "Lordly"
+    BaseType "Iron Hat" "Reaver Helmet" "Siege Helmet" "Samite Helmet" "Plate Vest" "Copper Plate" "War Plate" "Full Plate" "Arena Plate" "Bronze Plate" "Battle Plate" "Sun Plate" "Golden Plate" "Crusader Plate" "Glorious Plate" "Titan Gauntlet" "Greave" "Barbute" "Gladiator" "Bronze Gauntlet" "Cone" "Burgonet" "Colosseum" "Plated Gauntlet" "Steel Gauntlet" "Majestic" "Iron Gauntlet" "Goliath" "Ancient Gauntlet" "Close" "Tower" "Astral" "Antique Gauntlet" "Chestplate" "Lordly" "Vaal Gauntlet"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - DEX Armor
     Rarity Normal
-    BaseType "Rawhide Gloves" "Shagreen Gloves" "Strapped Leather" "Buckskin Tunic" "Full Leather" "Sun Leather" "Glorious Leather" "Assassin's Garb" "Rawhide Boots" "Shagreen Boots" "Destiny" "Zodiac" "Cap" "Hood" "Stealth" "Thief's" "Wild" "Tricorne" "Exquisite" "Pelt" "Eelskin" "Frontier" "Cutthroat's" "Shabby" "Goathide" "Deerskin" "Sharkskin" "Buckler" "Coronal" "Nubuck" "Slink"
+    BaseType "Strapped Leather" "Buckskin Tunic" "Full Leather" "Sun Leather" "Glorious Leather" "Assassin's Garb" "Deerskin" "Shabby" "Stealth" "Hood" "Shagreen Glove" "Cutthroat" "Destiny" "Coronal" "Cap" "Eelskin" "Frontier" "Rawhide Boot" "Shagreen Boot" "Goathide" "Wild" "Pelt" "Nubuck" "Sharkskin" "Rawhide Glove" "Tricorne" "Zodiac" "Buckler" "Thief" "Exquisite" "Slink"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - INT Armor
     Rarity Normal
-    BaseType "Silk Gloves" "Samite Gloves" "Silken Vest" "Silken Garb" "Silken Wrap" "Sorcerer" "Satin" "Spirit" "Regalia" "Embroidered" "Vestment" "Conjurer" "Necromancer" "Wool" "Circlet" "Cage" "Robe" "Scholar" "Slippers" "Arcanist" "Velvet"
+    BaseType "Silken Vest" "Silken Garb" "Silken Wrap" "Cage" "Slipper" "Velvet" "Embroidered" "Satin" "Spirit" "Conjurer" "Samite Glove" "Circlet" "Silk Glove" "Necromancer" "Sorcerer" "Arcanist" "Vestment" "Wool" "Regalia" "Scholar" "Robe"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR/INT Armor
     Rarity Normal
-    BaseType "Chain Gloves" "Soldier Gloves" "Legion Gloves" "Crusader Gloves" "Soldier Helmet" "Great Helmet" "Crusader Helmet" "Chain Boots" "Soldier Boots" "Legion Boots" "Crusader Boots" "Crown" "Riveted" "Hauberk" "Chainmail" "Kite" "Coif" "Aventail" "Mesh" "Ringmail" "Zealot"
+    BaseType "Soldier Helmet" "Great Helmet" "Crusader Helmet" "Soldier Boot" "Chain Glove" "Mesh" "Riveted" "Coif" "Kite" "Crusader Glove" "Ringmail" "Soldier Glove" "Hauberk" "Chainmail" "Aventail" "Chain Boot" "Legion Boot" "Legion Glove" "Crusader Boot" "Zealot" "Crown"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR/DEX Armor
     Rarity Normal
-    BaseType "Battered Helm" "Lacquered Helmet" "Scale" "Brigandine" "Secutor" "Fencer" "Wyrmscale" "Dragonscale" "Fishscale" "Lamellar" "Bronzescale" "Sallet" "Round" "Serpentscale" "Bascinet" "Steelscale" "Leatherscale" "Ironscale" "Hydrascale"
+    BaseType "Battered Helm" "Lacquered Helmet" "Ironscale" "Scale" "Round" "Serpentscale" "Wyrmscale" "Leatherscale" "Hydrascale" "Bronzescale" "Steelscale" "Fishscale" "Bascinet" "Brigandine" "Dragonscale" "Lamellar" "Sallet" "Secutor" "Fencer"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - INT/DEX Armor
     Rarity Normal
-    BaseType "Bone Armour" "Lacquered Garb" "Carnal Armour" "Strapped Boots" "Ambush Boots" "Carnal Boots" "Assassin's Boots" "Mitts" "Murder" "Sadist" "Crypt" "Varnished" "Clasped" "Spike Shield" "Wrapped" "Waxed" "Oiled" "Spiked Shield" "Sleek" "Shackled" "Mask" "Raiment" "Trapper" "Bundle" "Jacket" "Padded"
+    BaseType "Bone Armour" "Lacquered Garb" "Carnal Armour" "Crypt" "Mitt" "Waxed" "Trapper" "Shackled" "Bundle" "Jacket" "Spiked Shield" "Raiment" "Varnished" "Sadist" "Sleek" "Murder" "Mask" "Carnal Boot" "Oiled" "Strapped Boot" "Padded" "Clasped" "Wrapped" "Ambush Boot" "Spike Shield" "Assassin's Boot"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR Armor (Shield)
@@ -66,32 +66,32 @@ Show   #Gear - INT/DEX Armor (Shield)
 
 Show   #Gear - STR Armor
     Rarity Magic
-    BaseType "Iron Gauntlets" "Plated Gauntlets" "Bronze Gauntlets" "Steel Gauntlets" "Antique Gauntlets" "Ancient Gauntlets" "Vaal Gauntlets" "Titan Gauntlets" "Plate Vest" "Copper Plate" "War Plate" "Full Plate" "Arena Plate" "Bronze Plate" "Battle Plate" "Sun Plate" "Golden Plate" "Crusader Plate" "Glorious Plate" "Iron Hat" "Reaver Helmet" "Siege Helmet" "Samite Helmet" "Colosseum" "Tower" "Astral" "Close" "Greaves" "Chestplate" "Majestic" "Burgonet" "Goliath" "Cone" "Gladiator" "Barbute" "Lordly"
+    BaseType "Iron Hat" "Reaver Helmet" "Siege Helmet" "Samite Helmet" "Plate Vest" "Copper Plate" "War Plate" "Full Plate" "Arena Plate" "Bronze Plate" "Battle Plate" "Sun Plate" "Golden Plate" "Crusader Plate" "Glorious Plate" "Titan Gauntlet" "Greave" "Barbute" "Gladiator" "Bronze Gauntlet" "Cone" "Burgonet" "Colosseum" "Plated Gauntlet" "Steel Gauntlet" "Majestic" "Iron Gauntlet" "Goliath" "Ancient Gauntlet" "Close" "Tower" "Astral" "Antique Gauntlet" "Chestplate" "Lordly" "Vaal Gauntlet"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - DEX Armor
     Rarity Magic
-    BaseType "Rawhide Gloves" "Shagreen Gloves" "Strapped Leather" "Buckskin Tunic" "Full Leather" "Sun Leather" "Glorious Leather" "Assassin's Garb" "Rawhide Boots" "Shagreen Boots" "Destiny" "Zodiac" "Cap" "Hood" "Stealth" "Thief's" "Wild" "Tricorne" "Exquisite" "Pelt" "Eelskin" "Frontier" "Cutthroat's" "Shabby" "Goathide" "Deerskin" "Sharkskin" "Buckler" "Coronal" "Nubuck" "Slink"
+    BaseType "Strapped Leather" "Buckskin Tunic" "Full Leather" "Sun Leather" "Glorious Leather" "Assassin's Garb" "Deerskin" "Shabby" "Stealth" "Hood" "Shagreen Glove" "Cutthroat" "Destiny" "Coronal" "Cap" "Eelskin" "Frontier" "Rawhide Boot" "Shagreen Boot" "Goathide" "Wild" "Pelt" "Nubuck" "Sharkskin" "Rawhide Glove" "Tricorne" "Zodiac" "Buckler" "Thief" "Exquisite" "Slink"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - INT Armor
     Rarity Magic
-    BaseType "Silk Gloves" "Samite Gloves" "Silken Vest" "Silken Garb" "Silken Wrap" "Sorcerer" "Satin" "Spirit" "Regalia" "Embroidered" "Vestment" "Conjurer" "Necromancer" "Wool" "Circlet" "Cage" "Robe" "Scholar" "Slippers" "Arcanist" "Velvet"
+    BaseType "Silken Vest" "Silken Garb" "Silken Wrap" "Cage" "Slipper" "Velvet" "Embroidered" "Satin" "Spirit" "Conjurer" "Samite Glove" "Circlet" "Silk Glove" "Necromancer" "Sorcerer" "Arcanist" "Vestment" "Wool" "Regalia" "Scholar" "Robe"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR/INT Armor
     Rarity Magic
-    BaseType "Chain Gloves" "Soldier Gloves" "Legion Gloves" "Crusader Gloves" "Soldier Helmet" "Great Helmet" "Crusader Helmet" "Chain Boots" "Soldier Boots" "Legion Boots" "Crusader Boots" "Crown" "Riveted" "Hauberk" "Chainmail" "Kite" "Coif" "Aventail" "Mesh" "Ringmail" "Zealot"
+    BaseType "Soldier Helmet" "Great Helmet" "Crusader Helmet" "Soldier Boot" "Chain Glove" "Mesh" "Riveted" "Coif" "Kite" "Crusader Glove" "Ringmail" "Soldier Glove" "Hauberk" "Chainmail" "Aventail" "Chain Boot" "Legion Boot" "Legion Glove" "Crusader Boot" "Zealot" "Crown"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR/DEX Armor
     Rarity Magic
-    BaseType "Battered Helm" "Lacquered Helmet" "Scale" "Brigandine" "Secutor" "Fencer" "Wyrmscale" "Dragonscale" "Fishscale" "Lamellar" "Bronzescale" "Sallet" "Round" "Serpentscale" "Bascinet" "Steelscale" "Leatherscale" "Ironscale" "Hydrascale"
+    BaseType "Battered Helm" "Lacquered Helmet" "Ironscale" "Scale" "Round" "Serpentscale" "Wyrmscale" "Leatherscale" "Hydrascale" "Bronzescale" "Steelscale" "Fishscale" "Bascinet" "Brigandine" "Dragonscale" "Lamellar" "Sallet" "Secutor" "Fencer"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - INT/DEX Armor
     Rarity Magic
-    BaseType "Bone Armour" "Lacquered Garb" "Carnal Armour" "Strapped Boots" "Ambush Boots" "Carnal Boots" "Assassin's Boots" "Mitts" "Murder" "Sadist" "Crypt" "Varnished" "Clasped" "Spike Shield" "Wrapped" "Waxed" "Oiled" "Spiked Shield" "Sleek" "Shackled" "Mask" "Raiment" "Trapper" "Bundle" "Jacket" "Padded"
+    BaseType "Bone Armour" "Lacquered Garb" "Carnal Armour" "Crypt" "Mitt" "Waxed" "Trapper" "Shackled" "Bundle" "Jacket" "Spiked Shield" "Raiment" "Varnished" "Sadist" "Sleek" "Murder" "Mask" "Carnal Boot" "Oiled" "Strapped Boot" "Padded" "Clasped" "Wrapped" "Ambush Boot" "Spike Shield" "Assassin's Boot"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR Armor (Shield)

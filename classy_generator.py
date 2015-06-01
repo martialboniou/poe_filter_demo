@@ -80,7 +80,7 @@ class ClassyGenerator:
 		items_to_display = defaultdict(str)
 		for requirement in requirements:
 			items = database.get_items_by_requirement(requirement, item_class)
-			if items == []:
+			if not items:
 				items_to_display[requirement] = ''
 			else:
 				if not item_class:
