@@ -1,18 +1,14 @@
 Note
 ====
 
-This is a demo created for documentation purpose. The author only spent 3 hours.
+This is a demo created for documentation purpose.
 
 Goal
 ====
 
 - Extract `item-data` from the website of [Path Of Exile](http://www.pathofexile.com) game by Grinding Gear Games
-- Generate Awakening compatible loot filter blocks from:
-
-  - crossed requirements (mainly for armour; ie. STR/DEX, INT...)
-  - attributs (ie. base weapon w/ Attacks per second > 1.5; **TODO**)
-
-- Compress item names in list (**TODO**)
+- Generate Awakening compatible loot filter Show blocks for crossed requirements (ie. STR/DEX, INT... in `item-data/armour`)
+- Compress item names in list by checking there's no name conflict with other databases (weapons, currency, jewelry... *TODO* add map placeholders and maraketh weapons
 
 Usage
 =====
@@ -21,3 +17,9 @@ Usage
 - Install BeautifulSoup from python:
 
     python3 -m pip install BeautifulSoup4
+    python3 classy_generator.py
+
+Current State
+=============
+
+Good enough!
