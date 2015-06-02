@@ -2,7 +2,6 @@
 # python3 -m pip install BeautifulSoup4
 from bs4 import BeautifulSoup, NavigableString, CData
 import re
-import sys
 
 def unique_sorter(item):
 	return (len(item[0]), item)
@@ -74,8 +73,7 @@ def shorten_name(n):
 	return None
 
 def match_name(pattern, n):
-	match = re.match(".*({pattern}).*".format(pattern=pattern), n) is not None
-	return match
+	return re.match(".*({pattern}).*".format(pattern=pattern), n) is not None
 
 def find_unique_matchers(n, conflict_ns):
 	tokens = tokenize_name(n)
@@ -110,36 +108,49 @@ def find_unique_matchers(n, conflict_ns):
 	return matches
 
 def compress_names(ns, other_ns):
-	comp_ns = []
-	unique_ns = [] # list -> list
+	uncomp_ns = [] # list of uncompressible names
+	unique_ns = [] # list -> tokens list
 	for n in ns:
 		uniques = find_unique_matchers(n, other_ns)
 		if isinstance(uniques, str):
-			comp_ns.append(n)
+			uncomp_ns.append(n)
 		else:
 			unique_ns.append(uniques)
 	tok_ns = []
 	unique_ns.sort(key=unique_sorter)
 	occ_tok_ns = []
+	max_occ = len(ns)
+	ruler = False # switch if only one solution
 	for u in unique_ns:
 		occ, token = 1, ''
-		max_occ = len(u)
 		l_limit = max([len(x) for x in u])
 		if any(w for w in occ_tok_ns if w[1] in u):
 			continue # jump if it contains the best candidate
 		for t in u:
-			occ_t = len([sub for sub in unique_ns if t in sub])
-			if occ_t == max_occ: # all
+			occ_t = len([sub for sub in unique_ns if any(x for x in sub if match_name(t,x))])
+			if occ_t == max_occ: # rule em all
 				token = t
+				ruler = True
+				break
 			len_t = len(t)
 			if occ_t > occ or (occ_t == occ and len_t < l_limit):
 				token = t
 				l_limit = len_t
 				occ = occ_t
+		if ruler:
+			break
 		if not token:
 			token = u[0] # first by default
 		occ_tok_ns.append([occ, token])
+	if ruler:
+		return [token] # skip uncomp_ns as token is surely inside
 	occ_tok_ns.sort(key=occurence_sorter, reverse=True) # [(occurence, item)] -> sorted [item]
 	tok_ns = [x[-1] for x in occ_tok_ns]
-	tok_ns.extend(comp_ns)
+	# ensure tok_ns keeps shortest only (say, no ['Mirror', 'Mirrored'])
+	double_tns = [x for x in tok_ns for y in tok_ns if x != y and match_name(y, x)]
+	tok_ns = [t for t in tok_ns if t not in double_tns]
+	# ensure uncompressible ones cannot be reduced too
+	matched_uns = [x for x in uncomp_ns if any(y for y in tok_ns if match_name(y, x))]
+	unc_ns = [t for t in uncomp_ns if t not in matched_uns]
+	tok_ns.extend(unc_ns)
 	return tok_ns

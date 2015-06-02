@@ -92,6 +92,8 @@ class ClassyGenerator:
 			if items:
 				base_types = [bt for bt in base_types if bt not in items]
 				items_to_display[requirement] = self.display_items(compress_names(items, base_types))
+		if base_types:
+			print("{number} armor(s) {armor_names} unmatched by the {requirement} requirement".format(number=len(base_types), armor_names=' and '.join(base_types), requirement=' '.join(requirements)))
 
 		# template assignment
 		template = self.display_lead(lead) + 3 * ' '

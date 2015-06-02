@@ -1,6 +1,6 @@
 Show   #Gear - STR Armor
     Rarity Normal
-    BaseType "Tower" "Plate" "Greave" "Burgonet" "Plated" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
+    BaseType "Plate" "Tower" "Greave" "Burgonet" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - DEX Armor
@@ -10,22 +10,22 @@ Show   #Gear - DEX Armor
 
 Show   #Gear - INT Armor
     Rarity Normal
-    BaseType "Spirit" "Circlet" "Robe" "Slipper" "Silk" "Vestment" "Silken" "Regalia" "Conjurer" "Wool" "Velvet" "Sorcerer" "Scholar" "Satin" "Samite" "Cage" "Arcanist" "Embroidered"
+    BaseType "Spirit" "Circlet" "Silk" "Robe" "Slipper" "Vestment" "Regalia" "Conjurer" "Wool" "Velvet" "Sorcerer" "Scholar" "Satin" "Samite" "Cage" "Arcanist" "Embroidered"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR/INT Armor
     Rarity Normal
-    BaseType "Kite" "Chainmail" "Ringmail" "Glove" "Crusader" "Crown" "Zealot" "Chain" "Riveted" "Mesh" "Legion" "Hauberk" "Great" "Soldier Boot" "Coif" "Aventail" "Soldier Helmet"
+    BaseType "Kite" "Chain" "Ringmail" "Glove" "Crusader" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Coif" "Aventail" "Soldier Helmet"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR/DEX Armor
     Rarity Normal
-    BaseType "Round" "Gauntlet" "Brigandine" "Wyrmscale" "Dragonscale" "Scale" "Sallet" "Lamellar" "Helm" "Full" "Bascinet" "Steelscale" "Serpentscale" "Ironscale" "Hydrascale" "Bronzescale" "Leatherscale" "Helmet"
+    BaseType "Round" "Gauntlet" "Brigandine" "Wyrmscale" "Helm" "Dragonscale" "Scale" "Sallet" "Lamellar" "Full" "Bascinet" "Steelscale" "Serpentscale" "Ironscale" "Hydrascale" "Bronzescale" "Leatherscale"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - INT/DEX Armor
     Rarity Normal
-    BaseType "Shield" "Mask" "Spiked" "Boot" "Mitt" "Raiment" "Oiled" "Jacket" "Coat" "Armour" "Padded" "Waxed" "Sadist" "Lacquered"
+    BaseType "Spike" "Shield" "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR Armor (Shield)
@@ -60,13 +60,13 @@ Show   #Gear - STR/DEX Armor (Shield)
 
 Show   #Gear - INT/DEX Armor (Shield)
     Class Shield
-    BaseType "Shield" "Spiked"
+    BaseType "Spike"
     Rarity Normal
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR Armor
     Rarity Magic
-    BaseType "Tower" "Plate" "Greave" "Burgonet" "Plated" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
+    BaseType "Plate" "Tower" "Greave" "Burgonet" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - DEX Armor
@@ -76,22 +76,22 @@ Show   #Gear - DEX Armor
 
 Show   #Gear - INT Armor
     Rarity Magic
-    BaseType "Spirit" "Circlet" "Robe" "Slipper" "Silk" "Vestment" "Silken" "Regalia" "Conjurer" "Wool" "Velvet" "Sorcerer" "Scholar" "Satin" "Samite" "Cage" "Arcanist" "Embroidered"
+    BaseType "Spirit" "Circlet" "Silk" "Robe" "Slipper" "Vestment" "Regalia" "Conjurer" "Wool" "Velvet" "Sorcerer" "Scholar" "Satin" "Samite" "Cage" "Arcanist" "Embroidered"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR/INT Armor
     Rarity Magic
-    BaseType "Kite" "Chainmail" "Ringmail" "Glove" "Crusader" "Crown" "Zealot" "Chain" "Riveted" "Mesh" "Legion" "Hauberk" "Great" "Soldier Boot" "Coif" "Aventail" "Soldier Helmet"
+    BaseType "Kite" "Chain" "Ringmail" "Glove" "Crusader" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Coif" "Aventail" "Soldier Helmet"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR/DEX Armor
     Rarity Magic
-    BaseType "Round" "Gauntlet" "Brigandine" "Wyrmscale" "Dragonscale" "Scale" "Sallet" "Lamellar" "Helm" "Full" "Bascinet" "Steelscale" "Serpentscale" "Ironscale" "Hydrascale" "Bronzescale" "Leatherscale" "Helmet"
+    BaseType "Round" "Gauntlet" "Brigandine" "Wyrmscale" "Helm" "Dragonscale" "Scale" "Sallet" "Lamellar" "Full" "Bascinet" "Steelscale" "Serpentscale" "Ironscale" "Hydrascale" "Bronzescale" "Leatherscale"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - INT/DEX Armor
     Rarity Magic
-    BaseType "Shield" "Mask" "Spiked" "Boot" "Mitt" "Raiment" "Oiled" "Jacket" "Coat" "Armour" "Padded" "Waxed" "Sadist" "Lacquered"
+    BaseType "Spike" "Shield" "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR Armor (Shield)
@@ -126,7 +126,7 @@ Show   #Gear - STR/DEX Armor (Shield)
 
 Show   #Gear - INT/DEX Armor (Shield)
     Class Shield
-    BaseType "Shield" "Spiked"
+    BaseType "Spike"
     Rarity Magic
     SetTextColor 120 120 230           #Magic "Junk"
 
