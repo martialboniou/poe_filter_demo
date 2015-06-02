@@ -1,6 +1,6 @@
 Show   #Gear - STR Armor
     Rarity Normal
-    BaseType "Plate" "Tower" "Greave" "Burgonet" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
+    BaseType "Plate" "Tower" "Greave" "Burgonet" "Titan" "Goliath" "Gladiator" "Antique" "Ancient" "Vaal Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Samite Helmet"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - DEX Armor
@@ -66,7 +66,7 @@ Show   #Gear - INT/DEX Armor (Shield)
 
 Show   #Gear - STR Armor
     Rarity Magic
-    BaseType "Plate" "Tower" "Greave" "Burgonet" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
+    BaseType "Plate" "Tower" "Greave" "Burgonet" "Titan" "Goliath" "Gladiator" "Antique" "Ancient" "Vaal Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Samite Helmet"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - DEX Armor

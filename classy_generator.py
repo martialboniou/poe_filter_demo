@@ -85,7 +85,10 @@ class ClassyGenerator:
 
 		# names' compression
 		items_to_display = defaultdict(str)
-		base_types = self.base_types if not item_class else database.get_items(item_class)
+		if item_class:
+			base_types = database.get_items(item_class)
+		else:
+			base_types = [b for b in self.base_types if b not in database.get_items('Shield')]
 		for requirement in requirements:
 			items_to_display[requirement] = ''
 			items = database.get_items_by_requirement(requirement, item_class)
@@ -93,7 +96,7 @@ class ClassyGenerator:
 				base_types = [bt for bt in base_types if bt not in items]
 				items_to_display[requirement] = self.display_items(compress_names(items, base_types))
 		if base_types:
-			print("{number} armor(s) {armor_names} unmatched by the {requirement} requirement".format(number=len(base_types), armor_names=' and '.join(base_types), requirement=' '.join(requirements)))
+			print("{number} armor(s) {armor_names} unmatched by {requirement}".format(number=len(base_types), armor_names=' and '.join(base_types), requirement=' or '.join(requirements)))
 
 		# template assignment
 		template = self.display_lead(lead) + 3 * ' '
