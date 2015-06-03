@@ -31,36 +31,109 @@ class Color:
 
 class ClassyGenerator:
 	__default_output_filename = 'filter.txt'
-	__armor_template = '#Gear - {requirement} Armor\n\tRarity {rarity}\n\tBaseType {items}\n\tSetTextColor {coloring}'+11*' '+'#{rarity} "Junk"\n\n'
-	__class_template = '#Gear - {requirement} Armor ({the_class})\n\tClass {the_class}\n\tBaseType {items}\n\tRarity {rarity}\n\tSetTextColor {coloring}'+11*' '+'#{rarity} "Junk"\n\n'
+	__template = 3*' '+"""#Gear - {requirement} {category_name}{option}
+	Rarity {rarity}
+	BaseType {items}
+	SetTextColor {coloring}"""+11*' '+"""#{rarity} "Junk"
+
+"""
+	__class_version_template = ' ({the_class})\n\tClass {the_class}'
 	colors = {'normal': Color(190, 190, 190), 'magic' : Color(120, 120, 230)}
 	rarities = ['normal', 'magic']
 	tab_len = 4
 	comment_prefix = "### {text}\n\n"
 	__filter = None
 
-	def __init__(self, filter = None):
-		self.armour = PoEItemData('armour')
-		self.base_types = self.armour.get_items()
+	def __init__(self, filtr = None):
+		self.database = None
+		self.database = PoEItemData('armour')
+		try:
+			self.base_types
+		except NameError:
+			self.base_types = self.database.get_items()
+		try:
+			self.category_name
+		except NameError:
+			self.__category_name = self.database.data_type.upper()
+		self.current_class = None
 		self.__dict = self.__filter
-		self.__filter = filter
+		self.__filter = filtr
 		if not self.is_filter('antnee'): # no warranty in weapon/map precedence
 			for item_class in ['weapon', 'jewelry', 'currency']:
 				self.base_types.extend(PoEItemData(item_class).get_items())
 			self.base_types.extend(['Arena Pit']) # temporary: maps, maraketh weapons...
+		self.hidden_classes = [] # if no current_class
 
 	def run(self, filename = __default_output_filename):
 		self.content = ''
 		status = []
 		for rarity in self.rarities:
-			status.append(self.set_content(True, self.armour, rarity))
-			status.append(self.set_content(True, self.armour, rarity, None, 'Shield'))
+			shield_class = 'Shield'
+			self.current_class = None
+			self.category_name = 'ARMOR'
+			self.hidden_classes = shield_class
+			status.append(self.set_content(True, rarity))
+			self.current_class = shield_class
+			status.append(self.set_content(True, rarity))
 		save_file = open(filename, 'w')
 		save_file.write(self.content.expandtabs(self.tab_len))
 		save_file.close()
 		if all(x == 0 for x in status):
 			return 0
 		return 1
+
+	@property
+	def database(self):
+		return self.__database
+
+	@database.setter
+	def database(self, value):
+		self.__database = value
+		if value is not None:
+			self.base_types = self.database.get_items()
+			self.category_name = self.database.data_type.upper()
+
+	@property
+	def base_types(self):
+		return self.__base_types
+
+	@base_types.setter
+	def base_types(self, value):
+		self.__base_types = value
+
+	@property
+	def category_name(self):
+		return self.__category_name
+
+	@category_name.setter
+	def category_name(self, value):
+		self.__category_name = value
+
+	@property
+	def current_class(self):
+		return self.__current_class
+
+	@current_class.setter
+	def current_class(self, value):
+		if value is None:
+			value = ''
+		self.__current_class = value
+
+	@property
+	def hidden_classes(self):
+		return self.__hidden_classes
+
+	@hidden_classes.setter
+	def hidden_classes(self, classes):
+		self.__hidden_classes = []
+		if isinstance(classes, str):
+			classes = [ classes ]
+		for c in classes:
+			removed_items = self.database.get_items(c)
+			if removed_items:
+				self.base_types = [b for b in self.base_types if b not in removed_items]
+				self.__hidden_classes.append(c)
+		self.database.required_classes = set(self.database.get_classes()) - set(self.hidden_classes)
 
 	def is_filter(self, name):
 		if self.__filter is not None:
@@ -79,31 +152,37 @@ class ClassyGenerator:
 	def display_items(self, items_list):
 		return (' ').join('"{0}"'.format(item) for item in items_list)
 
-	def set_content(self, lead, database, rarities = rarities, requirements = None, item_class = ''):
+	def set_content(self, lead, rarities = rarities, requirements = None):
+		if self.database is None:
+			print("Set a database first before calling {0}".format(self.set_content.__name__))
+			return 0
 		if requirements is None:
-			requirements = database.get_requirements()
+			requirements = self.database.get_requirements()
 
 		# names' compression
 		items_to_display = defaultdict(str)
-		if item_class:
-			base_types = database.get_items(item_class)
+		if not self.category_name:
+			self.category_name = self.database.data_type.upper()
+		if self.current_class:
+			base_types = self.database.get_items(self.current_class)
 		else:
-			base_types = [b for b in self.base_types if b not in database.get_items('Shield')]
+			base_types = self.base_types
 		for requirement in requirements:
 			items_to_display[requirement] = ''
-			items = database.get_items_by_requirement(requirement, item_class)
+			items = self.database.get_items_by_requirement(requirement, self.current_class)
 			if items:
-				base_types = [bt for bt in base_types if bt not in items]
+				# IMPORTANT: precedence => remove previously filtered items
+				base_types = [b for b in base_types if b not in items]
 				items_to_display[requirement] = self.display_items(compress_names(items, base_types))
+		# unconsumed base_types by requirement
 		if base_types:
 			print("{number} armor(s) {armor_names} unmatched by {requirement}".format(number=len(base_types), armor_names=' and '.join(base_types), requirement=' or '.join(requirements)))
 
 		# template assignment
-		template = self.display_lead(lead) + 3 * ' '
-		if not item_class:
-			template += self.__armor_template
-		else:
-			template += self.__class_template
+		template = self.display_lead(lead) + self.__template
+		option = ''
+		if self.current_class:
+			option=self.__class_version_template.format(the_class = self.current_class)
 
 		if isinstance(rarities, str):
 			rarities = [rarities]
@@ -111,7 +190,9 @@ class ClassyGenerator:
 			for requirement in requirements:
 				if items_to_display[requirement]:
 					self.content += template.format( requirement = requirement
-																				 , the_class = item_class
+																				 , option = option
+																				 , category_name = self.category_name
+																				 , the_class = PoEItemData.abbrev_classes(self.current_class)
 																				 , rarity = rarity.capitalize()
 																				 , items = items_to_display[requirement]
 																				 , coloring = str(self.colors[rarity])

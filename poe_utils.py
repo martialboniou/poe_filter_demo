@@ -3,6 +3,38 @@
 from bs4 import BeautifulSoup, NavigableString, CData
 import re
 
+def list_replace(l, x, y, once = True):
+	enc = []
+	idx = []
+	if not isinstance(x, list):
+		x = [x]
+	len_x = len(x)
+	if not isinstance(y, list):
+		y = [y]
+	else:
+		y.reverse()
+	while True:
+		# check full x match in l
+		for i, v in enumerate(l):
+			if v in x:
+				if v not in enc:
+					enc.append(v)
+					idx.append(i)
+		if idx and (len(idx) == len_x):
+			for i_i, ix in enumerate(idx):
+				l.pop(ix-i_i) # compensate pop
+			for k in y:
+				l.insert(idx[0], k)
+			if once:
+				break
+			enc = []
+			idx = []
+		else:
+			break
+
+def list_replace_all(l, x, y):
+	list_replace(l, x, y, False)
+
 def unique_sorter(item):
 	return (len(item[0]), item)
 
@@ -128,7 +160,7 @@ def compress_names(ns, other_ns):
 			continue # jump if it contains the best candidate
 		for t in u:
 			occ_t = len([sub for sub in unique_ns if any(x for x in sub if match_name(t,x))])
-			if occ_t == max_occ: # rule em all
+			if occ_t == max_occ: # rule em all (ex: Round match all items in STR/DEX Shield)
 				token = t
 				ruler = True
 				break
@@ -146,10 +178,11 @@ def compress_names(ns, other_ns):
 		return [token] # skip uncomp_ns as token is surely inside
 	occ_tok_ns.sort(key=occurence_sorter, reverse=True) # [(occurence, item)] -> sorted [item]
 	tok_ns = [x[-1] for x in occ_tok_ns]
-	# ensure tok_ns keeps shortest only (say, no ['Mirror', 'Mirrored'])
+	# ensure tok_ns keeps shortest only (say, no ['Spike', 'Spiked'])
 	double_tns = [x for x in tok_ns for y in tok_ns if x != y and match_name(y, x)]
 	tok_ns = [t for t in tok_ns if t not in double_tns]
 	# ensure uncompressible ones cannot be reduced too
+	# (say, no ['Flesh', 'Fleshripper'] from 'Flesh and Spirit' and Axe)
 	matched_uns = [x for x in uncomp_ns if any(y for y in tok_ns if match_name(y, x))]
 	unc_ns = [t for t in uncomp_ns if t not in matched_uns]
 	tok_ns.extend(unc_ns)

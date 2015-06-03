@@ -6,16 +6,41 @@ from functools import *
 from poe_utils import *
 
 class PoEItemData():
+	# User Variables
+	__attribute_list = ['str', 'dex', 'int', 'str/int', 'str/dex', 'int/dex']
+	# Core Variables
+	# __attribute_map = item_data -> attribute -> attribute/requirement
+	__attribue_map = { 'armour': { 'str': 'Armour'
+															 , 'dex': 'Evasion Rating'
+															 , 'int': 'Energy Shield'
+															 }
+									 , 'weapon': { 'str': 'Req_Str'
+															 , 'dex': 'Req_Dex'
+															 , 'int': 'Req_Int'
+															 }
+									 }
+	# __class_group_map = abbrev in filter -> group shown on website
+	__class_group_map = { 'One Hand':  { 'One Hand Axe', 'One Hand Mace', 'One Hand Sword', 'Thrusting One Hand Sword' }
+											, 'Two Hand':  { 'Two Hand Axe', 'Two Hand Mace', 'Two Hand Sword' }
+											}
+	# __class_name_map = abbrev in filter -> name shown on website
+	__class_name_map = { 'Body'     : 'Body Armour'
+										 , 'Boot'     : 'Boots'
+										 , 'Glove'    : 'Gloves'
+										 , 'Thrusting': 'Thrusting One Hand Sword'
+										 }
+  # __reduced_class_map = abbrev in filter -> abbrevs in filter
+	__reduced_class_map = { 'Axe':   { 'Two Hand Axe', 'One Hand Axe' }
+												, 'Mace':  { 'Two Hand Mace', 'One Hand Mace' }
+												, 'Sword': { 'Two Hand Sword', 'Thrusting', 'One Hand Sword' }
+												}
+	__name_attribute = 'Name'
+	__requirements = [x.upper() for x in __attribute_list]
+	__rq_tables_generated = False # FIXME: bad design
 	__default_format = 'utf-8'
 	__default_url = "http://www.pathofexile.com/item-data"
 	__default_headers = {}
 	__default_headers['User-Agent'] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.17 (KHTML, like Gecko) Chrome/24.0.1312.27 Safari/537.17"
-	__attribute_list = ['str', 'dex', 'int', 'str/int', 'str/dex', 'int/dex']
-	__attribue_map = {'armour': {'str': 'Armour', 'dex': 'Evasion Rating', 'int': 'Energy Shield'},
-			'weapon':{'str': 'Req_Str', 'dex': 'Req_Dex', 'int': 'Req_Int'}}
-	__name_attribute = 'Name'
-	__requirements = [x.upper() for x in __attribute_list]
-	__rq_tables_generated = False # FIXME: bad design
 
 	def __init__(self, item_family = 'armour'):
 		self.tables = defaultdict(list) # Class -> Row
@@ -23,8 +48,32 @@ class PoEItemData():
 		self.__fetch_data(item_family)
 		self.__classes = set([]) # all classnames encountered
 		self.__generate_tables()
-		if item_family == 'armour':
-			self.__generate_rq_tables()
+		self.required_classes = None
+
+	@property
+	def required_classes(self):
+		return self.__required_classes
+
+	@required_classes.setter
+	def required_classes(self, value):
+		prev_required = None
+		try:
+			prev_required = self.required_classes.copy()
+		except AttributeError:
+			pass
+		self.__required_classes = {}
+		if value is None or value is {}:
+			# all classes are required by default
+			self.__required_classes = self.__classes.copy()
+		else:
+			# ensure required classes exist
+			self.__required_classes = value & self.__classes
+		# first use of accessor, do nothing
+		if prev_required is None:
+			return
+		# TODO: if changes, do something
+		if prev_required & self.__required_classes:
+			pass
 
 	def __fetch_data(self, item_family):
 		self.data_type = item_family
@@ -42,13 +91,13 @@ class PoEItemData():
 			return 1
 		try:
 			tables = self.data.findAll('table')
-		except AttributeError as e:
+		except AttributeError:
 			print('No tables found')
 			return 1
 		for table in tables:
 			try:
 				rows = table.find_all('tr')
-			except AttributeError as e:
+			except AttributeError:
 				print('Empty table')
 				continue
 
@@ -131,7 +180,8 @@ class PoEItemData():
 			rq = rq_tabs[item_class]
 		else:
 			for rq_class, rq_items in rq_tabs.items():
-				rq.extend(rq_items)
+				if rq_class in self.required_classes:
+					rq.extend(rq_items)
 		return rq
 
 	def get_selected_items(self, action, item_class = ''):
@@ -149,3 +199,33 @@ class PoEItemData():
 
 	def get_classes(self, pattern = ''):
 		return self.__get_variable_by_pattern(list(self.__classes), pattern)
+
+	@classmethod
+	def abbrev_classes(cls, class_names, precedence = None):
+		# class_names = string or heterogeneous list of classes
+		if isinstance(class_names, str):
+			cnames = [ class_names ]
+		else:
+			cnames = class_names.copy()
+		classes_set = set(cnames) # faster as set
+		for class_map in [cls.__class_group_map, cls.__class_name_map]:
+			for abbrev, names in class_map.items():
+				if isinstance(names, str):
+					names = { names }
+				if names.issubset(classes_set):
+					classes_set = classes_set - names
+					# replace in the 'ordered' list
+					list_replace(cnames, list(names), abbrev)
+		if precedence is not None:
+			if isinstance(precedence, str):
+				precedence = [precedence]
+			if isinstance(precedence, list):
+				precedence = set(precedence)
+			classes_set = set(cnames)
+			for abbrev, names in cls.__reduced_class_map.items():
+				uset = classes_set | precedence
+				if names.issubset(uset):
+					classes_set = uset - names
+					# replace in the 'ordered' list
+					list_replace(cnames, list(names - precedence), abbrev)
+		return cnames
