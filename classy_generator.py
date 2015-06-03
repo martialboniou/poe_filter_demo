@@ -47,21 +47,16 @@ class ClassyGenerator:
 	def __init__(self, filtr = None):
 		self.database = None
 		self.database = PoEItemData('armour')
-		try:
-			self.base_types
-		except NameError:
-			self.base_types = self.database.get_items()
-		try:
-			self.category_name
-		except NameError:
-			self.__category_name = self.database.data_type.upper()
+		self.base_types = self.database.get_items()
+		self.category_name = self.database.data_type.upper()
 		self.current_class = None
+		self.extra_base_types = []
 		self.__dict = self.__filter
 		self.__filter = filtr
 		if not self.is_filter('antnee'): # no warranty in weapon/map precedence
 			for item_class in ['weapon', 'jewelry', 'currency']:
-				self.base_types.extend(PoEItemData(item_class).get_items())
-			self.base_types.extend(['Arena Pit']) # temporary: maps, maraketh weapons...
+				self.extra_base_types.extend(PoEItemData(item_class).get_items())
+			self.extra_base_types.extend(['Arena Pit']) # temporary: maps, maraketh weapons...
 		self.hidden_classes = [] # if no current_class
 
 	def run(self, filename = __default_output_filename):
@@ -92,32 +87,11 @@ class ClassyGenerator:
 		if value is not None:
 			self.base_types = self.database.get_items()
 			self.category_name = self.database.data_type.upper()
-
-	@property
-	def base_types(self):
-		return self.__base_types
-
-	@base_types.setter
-	def base_types(self, value):
-		self.__base_types = value
-
-	@property
-	def category_name(self):
-		return self.__category_name
-
-	@category_name.setter
-	def category_name(self, value):
-		self.__category_name = value
-
-	@property
-	def current_class(self):
-		return self.__current_class
-
-	@current_class.setter
-	def current_class(self, value):
-		if value is None:
-			value = ''
-		self.__current_class = value
+			# inform new database about required_classes
+			try:
+				self.hidden_classes = self.hidden_classes.copy()
+			except AttributeError:
+				pass # database is defined before hidden_classes
 
 	@property
 	def hidden_classes(self):
@@ -129,11 +103,20 @@ class ClassyGenerator:
 		if isinstance(classes, str):
 			classes = [ classes ]
 		for c in classes:
-			removed_items = self.database.get_items(c)
-			if removed_items:
-				self.base_types = [b for b in self.base_types if b not in removed_items]
+			if self.database.get_items(c):
 				self.__hidden_classes.append(c)
+		# IMPORTANT: don't touch base_types
 		self.database.required_classes = set(self.database.get_classes()) - set(self.hidden_classes)
+
+	@property
+	def current_class(self):
+		return self.__current_class
+
+	@current_class.setter
+	def current_class(self, value):
+		if value is None:
+			value = ''
+		self.__current_class = value
 
 	def is_filter(self, name):
 		if self.__filter is not None:
@@ -173,10 +156,21 @@ class ClassyGenerator:
 			if items:
 				# IMPORTANT: precedence => remove previously filtered items
 				base_types = [b for b in base_types if b not in items]
-				items_to_display[requirement] = self.display_items(compress_names(items, base_types))
-		# unconsumed base_types by requirement
+				# extend conflicting database
+				conflict_base_types = base_types
+				if not self.current_class:
+					conflict_base_types.extend(self.extra_base_types)
+				# compress names
+				items_to_display[requirement] = self.display_items(compress_names(items, conflict_base_types))
+		# inform about unconsumed base_types by requirement
 		if base_types:
-			print("{number} armor(s) {armor_names} unmatched by {requirement}".format(number=len(base_types), armor_names=' and '.join(base_types), requirement=' or '.join(requirements)))
+			bt = base_types
+			if not self.current_class:
+				hidden_set = set({})
+				for h in self.hidden_classes: # removed unused hidden_classes items
+					hidden_set = hidden_set | set(self.database.get_items(h))
+				bt = list(set(base_types) - hidden_set)
+			print("{number} armor(s) {armor_names} unmatched by {requirement}".format(number=len(bt), armor_names=' and '.join(bt), requirement=' or '.join(requirements)))
 
 		# template assignment
 		template = self.display_lead(lead) + self.__template

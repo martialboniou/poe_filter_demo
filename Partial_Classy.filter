@@ -1,11 +1,11 @@
 Show   #Gear - STR ARMOR
     Rarity Normal
-    BaseType "Plate" "Greave" "Burgonet" "Titan" "Goliath" "Gladiator" "Antique" "Ancient" "Vaal Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Samite Helmet"
+    BaseType "Plate" "Greave" "Burgonet" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - DEX ARMOR
     Rarity Normal
-    BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Eelskin" "Stealth" "Slink" "Shagreen" "Rawhide" "Nubuck" "Goathide" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shabby" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Buckskin" "Strapped Leather" "Full Leather" "Assassin's Garb"
+    BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Eelskin" "Stealth" "Slink" "Nubuck" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shagreen Glove" "Shagreen Boot" "Shabby" "Rawhide Glove" "Rawhide Boot" "Goathide Glove" "Goathide Boot" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Strapped Leather" "Buckskin Tunic" "Full Leather" "Assassin's Garb"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - INT ARMOR
@@ -15,7 +15,7 @@ Show   #Gear - INT ARMOR
 
 Show   #Gear - STR/INT ARMOR
     Rarity Normal
-    BaseType "Chain" "Ringmail" "Glove" "Crusader" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Coif" "Aventail" "Soldier Helmet"
+    BaseType "Chain" "Ringmail" "Glove" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Crusader Boot" "Coif" "Aventail" "Soldier Helmet" "Crusader Helmet"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR/DEX ARMOR
@@ -25,7 +25,7 @@ Show   #Gear - STR/DEX ARMOR
 
 Show   #Gear - INT/DEX ARMOR
     Rarity Normal
-    BaseType "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered"
+    BaseType "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered Garb"
     SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR ARMOR (Shield)
@@ -66,12 +66,12 @@ Show   #Gear - INT/DEX ARMOR (Shield)
 
 Show   #Gear - STR ARMOR
     Rarity Magic
-    BaseType "Plate" "Greave" "Burgonet" "Titan" "Goliath" "Gladiator" "Antique" "Ancient" "Vaal Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Samite Helmet"
+    BaseType "Plate" "Greave" "Burgonet" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - DEX ARMOR
     Rarity Magic
-    BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Eelskin" "Stealth" "Slink" "Shagreen" "Rawhide" "Nubuck" "Goathide" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shabby" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Buckskin" "Strapped Leather" "Full Leather" "Assassin's Garb"
+    BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Eelskin" "Stealth" "Slink" "Nubuck" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shagreen Glove" "Shagreen Boot" "Shabby" "Rawhide Glove" "Rawhide Boot" "Goathide Glove" "Goathide Boot" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Strapped Leather" "Buckskin Tunic" "Full Leather" "Assassin's Garb"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - INT ARMOR
@@ -81,7 +81,7 @@ Show   #Gear - INT ARMOR
 
 Show   #Gear - STR/INT ARMOR
     Rarity Magic
-    BaseType "Chain" "Ringmail" "Glove" "Crusader" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Coif" "Aventail" "Soldier Helmet"
+    BaseType "Chain" "Ringmail" "Glove" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Crusader Boot" "Coif" "Aventail" "Soldier Helmet" "Crusader Helmet"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR/DEX ARMOR
@@ -91,7 +91,7 @@ Show   #Gear - STR/DEX ARMOR
 
 Show   #Gear - INT/DEX ARMOR
     Rarity Magic
-    BaseType "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered"
+    BaseType "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered Garb"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR ARMOR (Shield)

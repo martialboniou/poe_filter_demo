@@ -61,7 +61,7 @@ class PoEItemData():
 			prev_required = self.required_classes.copy()
 		except AttributeError:
 			pass
-		self.__required_classes = {}
+		self.__required_classes = set({})
 		if value is None or value is {}:
 			# all classes are required by default
 			self.__required_classes = self.__classes.copy()
@@ -71,7 +71,7 @@ class PoEItemData():
 		# first use of accessor, do nothing
 		if prev_required is None:
 			return
-		# TODO: if changes, do something
+		# TODO: if changed, do something
 		if prev_required & self.__required_classes:
 			pass
 
