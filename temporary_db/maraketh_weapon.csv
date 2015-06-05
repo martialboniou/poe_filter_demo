@@ -1,0 +1,21 @@
+name;level;class;req str;req dex;req int
+slender blade;56;two hand sword;96;113;0
+prong dagger;55;dagger;0;89;106
+lunaris staff;57;staff;101;0;101
+tiger hook;70;one hand sword;119;119;0
+dagger-axe;36;two hand axe;89;43;0
+gemini claw;72;claw;0;121;121
+sambar sceptre;70;sceptre;;;
+dragoon sword;72;;;;
+pagan wand;40;wand;;;
+heathen wand;59;wand;0;0;184
+profane wand;70;wand;0;0;237
+eclipse staff;70;staff;;;
+runic hatchet;71;one hand axe;163;82;0
+fleshripper;70;two hand axe;156;84;0
+sai;70;dagger;0;121;121
+coronal maul;69;two hand mace;220;0;0
+midgard mac;70;one hand mace;220;0;0
+exquisite blade;;;;
+courtesan sword;57;one hand sword;0;190;0
+ancient needle;;;;

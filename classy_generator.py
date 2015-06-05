@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # python3 -m pip install BeautifulSoup4
 from poe_item_data import PoEItemData
-from poe_utils import compress_names
+from poe_utils import import_db, get_db_column, compress_names, quotify
 from collections import defaultdict
+from sys import exit
 
 output_filename = "Partial_Classy.filter"
 
@@ -56,7 +57,10 @@ class ClassyGenerator:
 		if not self.is_filter('antnee'): # no warranty in weapon/map precedence
 			for item_class in ['weapon', 'jewelry', 'currency']:
 				self.extra_base_types.extend(PoEItemData(item_class).get_items())
-			self.extra_base_types.extend(['Arena Pit']) # temporary: maps, maraketh weapons...
+			# UTF-8 CSV files in db subdirectory = additional base_types
+			# NOTE: don't use capital letters in the first line's attributes
+			for key, extra_table in import_db('temporary_db').items():
+				self.extra_base_types.extend([name.title() for name in get_db_column('name', extra_table)])
 		self.hidden_classes = [] # if no current_class
 
 	def run(self, filename = __default_output_filename):
@@ -132,9 +136,6 @@ class ClassyGenerator:
 	def display_title(self, text):
 		self.content += self.comment_prefix.format(text=text)
 
-	def display_items(self, items_list):
-		return (' ').join('"{0}"'.format(item) for item in items_list)
-
 	def set_content(self, lead, rarities = rarities, requirements = None):
 		if self.database is None:
 			print("Set a database first before calling {0}".format(self.set_content.__name__))
@@ -161,7 +162,7 @@ class ClassyGenerator:
 				if not self.current_class:
 					conflict_base_types.extend(self.extra_base_types)
 				# compress names
-				items_to_display[requirement] = self.display_items(compress_names(items, conflict_base_types))
+				items_to_display[requirement] = ' '.join(quotify(c) for c in compress_names(items, conflict_base_types))
 		# inform about unconsumed base_types by requirement
 		if base_types:
 			bt = base_types
@@ -170,7 +171,7 @@ class ClassyGenerator:
 				for h in self.hidden_classes: # removed unused hidden_classes items
 					hidden_set = hidden_set | set(self.database.get_items(h))
 				bt = list(set(base_types) - hidden_set)
-			print("{number} armor(s) {armor_names} unmatched by {requirement}".format(number=len(bt), armor_names=' and '.join(bt), requirement=' or '.join(requirements)))
+			print("{number} armor(s) {armor_names} unmatched by {requirement}".format(number=len(bt), armor_names=', '.join(quotify(b, '\s') for b in bt), requirement=' or '.join(requirements)))
 
 		# template assignment
 		template = self.display_lead(lead) + self.__template

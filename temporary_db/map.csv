@@ -1,0 +1,77 @@
+normal imprint;name;level;upgrade map;boss;layout;boss fight
+A;crypt map;68;sewer map;pagan bishop of agony;normal;easy
+E;dungeon map;68;aqueduct map;penitentiary incarcerator;normal;hard
+I;grotto map;68;Thicket Map;Fire and Fury;normal;Very Easy
+O;Dunes Map;68;mountain Ledge Map;The Blacksmith;Normal;Normal
+U;Pit Map;68;Cemetery Map;Blood Progenitor;;
+T;Tropical Island Map;68;Arcade Map;Blood Progenitor;Easy;Easy
+N;Desert Map;68;Wharf Map;Blood Progenitor;;
+S;Sewer Map;69;Ghetto Map;Belcer, the Pirate Lord;Complex;Easy
+H;Aqueduct Map;69;Spider Lair Map;Belcer, the Pirate Lord;;
+R;Thicket Map;69;Vaal Pyramid Map;Steelpoint the Avenger;Normal;Normal
+D;Mountain Ledge Map;69;Reef Map;Champion of Frost;Easy;Easy
+L;Cemetery Map;69;Quarry Map;Thunderskull;Normal;Very Easy
+C;Arcade Map;69;Mud Geyser Map;Herald of Ashes:Herald of Thunder;Complex;Very Easy
+M;Wharf Map;69;Museum Map;Bramblemist;Easy;Normal
+W;Ghetto Map;70;Arena Map;The Reaver;Normal;Normal
+F;Spider Lair Map;70;Overgrown Shrine Map;Hybrid Widow;Normal;Normal
+G;Vaal Pyramid Map;70;Tunnel Map;Atziri's Chosen;Normal;Normal
+Y;Reef Map;70;Shore Map;Asphyxia;Complex;Normal
+P;Quarry Map;70;Spider Forest Map;Asphyxia;;
+B;Mud Geyser Map;70;Promenade Map;Skullbeak;Normal;Normal
+V;Museum Map;70;Arena Map;The Broken Prince:The Fallen Queen:The Hollow Lady;Normal;Hard
+K;Arena Map;71;Underground Sea Map;Hybrid Widow;;
+J;Overgrown Shrine Map;71;Pier Map;Hybrid Widow;Normal;Normal
+X;Tunnel Map;71;Bog Map;Lady of the Brood;Complex;Easy
+Q;Shore Map;71;Graveyard Map;Glace;Normal;Normal
+Z;Spider Forest Map;71;Coves Map;The Blacksmith;Normal;Normal
+Ó;Promenade Map;71;Villa Map;Blackguard Avenger:Blackguard Tempest;Easy;Hard
+É;Underground Sea Map;72;Temple Map;The Idol Beyond;Easy;Very Easy
+Á;Pier Map;72;Arachnid Nest Map;Flame of Truth;Easy;Very Easy
+Í;Bog Map;72;Strand Map;Slitherskin;Normal;Very Easy
+Ú;Graveyard Map;72;Dry Woods Map;Merveil, the Reflection;Normal;Very Hard
+Ü;Coves Map;72;Colonnade Map;Master of the Blade;Normal;Very Easy
+Ö;Villa Map;72;Catacomb Map;Excellis Aurafix;Normal;Normal
+Ä;Temple Map;73;Torture Chamber Map;The Wicked One;Complex;Hard
+Ë;Arachnid Nest Map;73;Waste Pool Map;Lord of the Bow;Normal;Normal
+Ï;Strand Map;73;Mine Map;Massier;Easy;Normal
+Æ;Dry Woods Map;73;Jungle Valley Map;Spirit of Nadia:Spirit of Aidan;Normal;Easy
+Œ;Colonnade Map;73;Labyrinth Map;Carnage;Easy;Hard
+Ñ;Catacomb Map;73;Torture Chamber Map;Xixic, High Necromancer;;
+Ÿ;Torture Chamber Map;74;Cells Map;Shock and Horror;Normal;Hard
+1;Waste Pool Map;74;Canyon Map;Asphyxia;Complex;Normal
+2;Mine Map;74;Dark Forest Map;Loathe;Complex;Normal
+3;Jungle Valley Map;74;Dry Peninsula Map;Spinner of False Hope;Normal;Very Hard
+4;Labyrinth Map;74;Orchard Map;Sallazzang;Complex;Hard
+5;Cells Map;75;Underground River Map;Harbinger;Normal;Normal
+6;Canyon Map;75;Arid Lake Map;Lord of the Bow;Easy;Normal
+7;Dark Forest Map;75;Gorge Map;Oak the Mighty;Normal;Easy
+8;Dry Peninsula Map;75;Residence Map;Titan of the Grove;Easy;Easy
+9;Orchard Map;75;Underground River Map;Tunneltrap;Complex;Very Hard
+0;Underground River Map;76;Necropolis Map;Beast of the Pits;Normal;Easy
+?;Arid Lake Map;76;Plateau Map;Drought-Maddened Rhoa;;
+!;Gorge Map;76;Bazaar Map;Master of the Blade;Easy;Very Easy
+(;Residence Map;76;Abyss Map;The High Templar;Normal;Very Hard
+);Necropolis Map;77;Crematorium Map;Merveil, the Reflection:Merveil, the Returned;Normal;Very Hard
+-;Plateau Map;77;Precinct Map;Drought-Maddened Rhoa;Easy;Easy
+/;Bazaar Map;77;Academy Map;Dialla's Anger:Dialla's Hatred:Dialla's Wrath;Complex;Normal
+\;Abyss Map;77;Springs Map;Dialla's Anger:Dialla's Hatred:Dialla's Wrath;;
+|;Crematorium Map;78;Shipyard Map;Megaera;Normal;Hard
+=;Precinct Map;78;Overgrown Ruin Map;Lady Stormflay;Normal;Normal
+*;Academy Map;;78;Village Ruin Map;The Arbiter of Knowledge;Normal;Hard
+†;Springs Map;78;Arsenal Map;Witch of the Cauldron;Normal;Normal
+‡;Shipyard Map;79;Wasteland Map;Warmonger;Normal;Easy
+§;Overgrown Ruin Map;79;Courtyard Map;Loathe;Normal;Easy
+[;Village Ruin Map;79;Excavation Map;Volcanus;;
+];Arsenal Map;79;Waterways Map;Volcanus;Complex;Very Easy
+_;Wasteland Map;80;Palace Map;Oriath's Virtue:Oriath's Vengeance:Oriath's Vigil;;
+~;Courtyard Map;80;Shrine Map;Oriath's Virtue:Oriath's Vengeance:Oriath's Vigil;Complex;Hard
+{;Excavation Map;80;Maze Map;Oriath's Virtue:Oriath's Vengeance:Oriath's Vigil;;
+};Waterways Map;80;Palace Map;Oriath's Virtue:Oriath's Vengeance:Oriath's Vigil;;
+©;Palace Map;81;Core Map;God's Chosen:The Hallowed Husk;Normal;Very Hard
+€;Shrine Map;81;Volcano Map;Piety the Empyrean;;
+<;Maze Map;81;Colosseum Map;Shadow of the Vaal;Normal;Hard
+>;Vaal Temple Map;81;Core Map;K'aj Q'ura:K'aj Y'ara'az:K'aj A'alai;Easy;Very Hard
+•;Core Map;82;;Shadow of the Vaal;;
+µ;Volcano Map;82;;Shadow of the Vaal;;
+»;Colosseum Map;82;;Shadow of the Vaal;;

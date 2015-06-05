@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # python3 -m pip install BeautifulSoup4
+from collections import defaultdict
 from bs4 import BeautifulSoup, NavigableString, CData
+from os import listdir
+from os.path import dirname, abspath, exists, isfile, join
+import csv
 import re
 
 def list_replace(l, x, y, once = True):
@@ -71,7 +75,7 @@ def parse_rows(rows):
 	irows = iter(rows)
 	for row in irows:
 		for el in ['th', 'td']:
-			table_el = row.find_all(el)
+			table_el = row.findAll(el)
 			line = []
 			if table_el:
 				try:
@@ -83,7 +87,7 @@ def parse_rows(rows):
 				while rowsp > 1:
 					try:
 						next_row = next(irows)
-						table_el = next_row.find_all(el)
+						table_el = next_row.findAll(el)
 						if table_el:
 							line.extend(parse_multiline(table_el, True))
 					except StopIteration as e:
@@ -106,6 +110,11 @@ def shorten_name(n):
 
 def match_name(pattern, n):
 	return re.match(".*({pattern}).*".format(pattern=pattern), n) is not None
+
+def quotify(word, pattern = ''):
+	if not pattern or match_name(pattern, word):
+		return '"{0}"'.format(word)
+	return word
 
 def find_unique_matchers(n, conflict_ns):
 	tokens = tokenize_name(n)
@@ -187,3 +196,42 @@ def compress_names(ns, other_ns):
 	unc_ns = [t for t in uncomp_ns if t not in matched_uns]
 	tok_ns.extend(unc_ns)
 	return tok_ns
+
+def import_db(subdir_name, extension = 'csv'):
+	tables = defaultdict(list)
+	db_dir = join(dirname(abspath(__file__)), subdir_name)
+	if not exists(db_dir):
+		print('file not found in {0}'.format(db_dir))
+		return tables
+	for f in listdir(db_dir):
+		filename = join(db_dir, f)
+		if isfile(filename) and f.endswith('.'+extension):
+			len_ext = 1 + len(extension) if extension != '' else 0
+			category = f[:len(f)-len_ext]
+			tables[category] = []
+			with open(filename, 'r', encoding='utf-8') as csvfile:
+				try:
+					dialect = csv.Sniffer().sniff(csvfile.read(1024), delimiters=";,")
+				except:
+					print("not well-formed {0} import file".format(category))
+				else:
+					csvfile.seek(0)
+					reader = csv.reader(csvfile, dialect)
+					for line in reader:
+						if line:
+							tables[category].append(line)
+	return tables
+
+def get_db_column(attribute, table):
+	try:
+		idx = table[0].index(attribute)
+	except (ValueError, IndexError):
+		return []
+	res = []
+	for row in table[1:]:
+		try:
+			element = row[idx]
+		except IndexError:
+			continue
+		res.append(element)
+	return res

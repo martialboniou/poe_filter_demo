@@ -96,7 +96,7 @@ class PoEItemData():
 			return 1
 		for table in tables:
 			try:
-				rows = table.find_all('tr')
+				rows = table.findAll('tr')
 			except AttributeError:
 				print('Empty table')
 				continue
