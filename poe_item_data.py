@@ -2,8 +2,10 @@
 from collections import defaultdict
 from urllib.request import Request, urlopen
 from urllib.error import URLError
+from os.path import join
 from functools import *
 from poe_utils import *
+from sys import exit
 
 class PoEItemData():
 	# User Variables
@@ -105,6 +107,13 @@ class PoEItemData():
 			self.__classes.add(table_class)  # remember all classnames
 			table_rows = parse_rows(rows) # implicits are concatenated
 			self.tables[table_class] = table_rows
+		# add maraketh weapons if item_data/weapon
+		if self.data_type == 'weapon':
+			act_four_tables = import_db(join('temporary_db','maraketh_weapon'))
+			for table_class, table in act_four_tables.items():
+				# suppose table is well-formed
+				if table[1:]:
+					self.tables[table_class].append(table[1:])
 
 	def __generate_rq_tables(self):
 		table_requirements = defaultdict(list)

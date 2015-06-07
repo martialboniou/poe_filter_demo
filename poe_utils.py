@@ -207,7 +207,7 @@ def import_db(subdir_name, extension = 'csv'):
 		filename = join(db_dir, f)
 		if isfile(filename) and f.endswith('.'+extension):
 			len_ext = 1 + len(extension) if extension != '' else 0
-			category = f[:len(f)-len_ext]
+			category = f[:len(f)-len_ext].title().replace('_', ' ')
 			tables[category] = []
 			with open(filename, 'r', encoding='utf-8') as csvfile:
 				try:
