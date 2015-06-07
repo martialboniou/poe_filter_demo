@@ -24,9 +24,10 @@ Requirement
 - Install python 3.3+
 - Install BeautifulSoup and Pygments 2.0
 
+Run:
 
-      python3 -m pip install BeautifulSoup4
-      python3 -m pip install pygments
+    python3 -m pip install BeautifulSoup4
+    python3 -m pip install pygments
 
 Run
 ===
