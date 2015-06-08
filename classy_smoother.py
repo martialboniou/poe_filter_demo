@@ -46,6 +46,7 @@ def run():
 	tk = iter(lf.get_tokens_unprocessed(content))
 	array = list(content)
 	offset = 0
+	changed = False
 	# one rule: smartblocks precede Show/Hide blocks
 	while True:
 		try:
@@ -74,6 +75,7 @@ def run():
 					print('process error')
 					continue
 				if tagname != tokenValue:
+					changed = True
 					if tagname == keywords[0]:
 						t_len = k_lens[0]
 					else:
@@ -83,9 +85,10 @@ def run():
 						array.pop(i)
 					array.insert(i, tagname)
 					offset -= t_len - 1
-	save_file = open(sys.argv[1], 'w')
-	save_file.write(''.join(array))
-	save_file.close()
+	if changed:
+		save_file = open(sys.argv[1], 'w')
+		save_file.write(''.join(array))
+		save_file.close()
 	return 0
 
 if __name__ == "__main__":
