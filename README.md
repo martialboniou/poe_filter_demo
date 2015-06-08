@@ -16,18 +16,21 @@ classy_generator
 classy_smoother
 ---------------
 
-- replace every Smartblock header's changes in [antnee](http://www.pathofexile.com/forum/view-thread/1245785) loot filter
+- replace every Smartblock header's changes in [antnee](http://www.pathofexile.com/forum/view-thread/1245785) loot filter or any other filters using a Smartblocks convention
 
 Requirement
 ===========
 
-- Install python 3.3+
-- Install BeautifulSoup and Pygments 2.0
+- python 3.3+ (tested on 3.4.3)
+- BeautifulSoup (for classy_generator)
+- Pygments 2.0 (for classy_smoother)
+- py2exe (for standalone)
 
-Run:
+By using pip:
 
     python3 -m pip install BeautifulSoup4
     python3 -m pip install pygments
+    python3 -m pip install py2exe
 
 Run
 ===
@@ -48,6 +51,19 @@ Test
 ====
 
     python3 -m unittest discover -v
+
+Standalone (Windows Only)
+=========================
+
+    python3 standalone.py classy_smoother
+
+To share with an another player:
+
+    python3 standalone.py 1 classy_smoother
+
+This will generate a large executable file including your version of `python3x.dll`. You may chain several filenames in the command line (with or without the `.py` extension). More info:
+
+    python3 standalone.py
 
 State
 =====
