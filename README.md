@@ -21,12 +21,13 @@ classy_smoother
 Requirement
 ===========
 
-- python 3.3+ (tested on 3.4.3)
+- Python 3.3+ (Python 3.4 is highly recommended; tested on 3.4.3)
+- [pip](https://pypi.python.org/pypi/pip) (included in python 3.4+); install this module via the command `python get-pip.py` after having installed [Setuptools](http://pypi.python.org/pypi/setuptools)
 - BeautifulSoup (for classy_generator)
 - Pygments 2.0 (for classy_smoother)
 - py2exe (for standalone)
 
-By using pip:
+Install the 3 last modules by using pip:
 
     python3 -m pip install BeautifulSoup4
     python3 -m pip install pygments
