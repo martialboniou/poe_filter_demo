@@ -66,14 +66,13 @@ class ClassyGenerator:
 	def run(self, filename = __default_output_filename):
 		self.content = ''
 		status = []
-		for rarity in self.rarities:
-			shield_class = 'Shield'
-			self.current_class = None
-			self.category_name = 'ARMOR'
-			self.hidden_classes = shield_class
-			status.append(self.set_content(True, rarity))
-			self.current_class = shield_class
-			status.append(self.set_content(True, rarity))
+		shield_class = 'Shield'
+		self.current_class = None
+		self.category_name = 'ARMOR'
+		self.hidden_classes = shield_class
+		status.append(self.set_content(True))
+		self.current_class = shield_class
+		status.append(self.set_content(True))
 		save_file = open(filename, 'w')
 		save_file.write(self.content.expandtabs(self.tab_len))
 		save_file.close()
@@ -181,8 +180,8 @@ class ClassyGenerator:
 
 		if isinstance(rarities, str):
 			rarities = [rarities]
-		for rarity in rarities:
-			for requirement in requirements:
+		for requirement in requirements:
+			for rarity in rarities:
 				if items_to_display[requirement]:
 					self.content += template.format( requirement = requirement
 																				 , option = option

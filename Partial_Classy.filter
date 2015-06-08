@@ -3,76 +3,25 @@ Show   #Gear - STR ARMOR
     BaseType "Plate" "Greave" "Burgonet" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
     SetTextColor 190 190 190           #Normal "Junk"
 
-Show   #Gear - DEX ARMOR
-    Rarity Normal
-    BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Eelskin" "Stealth" "Slink" "Nubuck" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shagreen Glove" "Shagreen Boot" "Shabby" "Rawhide Glove" "Rawhide Boot" "Goathide Glove" "Goathide Boot" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Strapped Leather" "Buckskin Tunic" "Full Leather" "Assassin's Garb"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - INT ARMOR
-    Rarity Normal
-    BaseType "Circlet" "Silk" "Robe" "Slipper" "Vestment" "Regalia" "Conjurer" "Wool" "Velvet" "Sorcerer" "Scholar" "Satin" "Samite" "Cage" "Arcanist" "Embroidered"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - STR/INT ARMOR
-    Rarity Normal
-    BaseType "Chain" "Ringmail" "Glove" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Crusader Boot" "Coif" "Aventail" "Soldier Helmet" "Crusader Helmet"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - STR/DEX ARMOR
-    Rarity Normal
-    BaseType "Gauntlet" "Brigandine" "Wyrmscale" "Helm" "Dragonscale" "Scale" "Sallet" "Lamellar" "Full" "Bascinet" "Steelscale" "Serpentscale" "Ironscale" "Hydrascale" "Bronzescale" "Leatherscale"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - INT/DEX ARMOR
-    Rarity Normal
-    BaseType "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered Garb"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - STR ARMOR (Shield)
-    Class Shield
-    Rarity Normal
-    BaseType "Tower"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - DEX ARMOR (Shield)
-    Class Shield
-    Rarity Normal
-    BaseType "Buckler"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - INT ARMOR (Shield)
-    Class Shield
-    Rarity Normal
-    BaseType "Spirit"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - STR/INT ARMOR (Shield)
-    Class Shield
-    Rarity Normal
-    BaseType "Kite"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - STR/DEX ARMOR (Shield)
-    Class Shield
-    Rarity Normal
-    BaseType "Round"
-    SetTextColor 190 190 190           #Normal "Junk"
-
-Show   #Gear - INT/DEX ARMOR (Shield)
-    Class Shield
-    Rarity Normal
-    BaseType "Spike"
-    SetTextColor 190 190 190           #Normal "Junk"
-
 Show   #Gear - STR ARMOR
     Rarity Magic
     BaseType "Plate" "Greave" "Burgonet" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - DEX ARMOR
+    Rarity Normal
+    BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Eelskin" "Stealth" "Slink" "Nubuck" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shagreen Glove" "Shagreen Boot" "Shabby" "Rawhide Glove" "Rawhide Boot" "Goathide Glove" "Goathide Boot" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Strapped Leather" "Buckskin Tunic" "Full Leather" "Assassin's Garb"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - DEX ARMOR
     Rarity Magic
     BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Eelskin" "Stealth" "Slink" "Nubuck" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shagreen Glove" "Shagreen Boot" "Shabby" "Rawhide Glove" "Rawhide Boot" "Goathide Glove" "Goathide Boot" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Strapped Leather" "Buckskin Tunic" "Full Leather" "Assassin's Garb"
     SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - INT ARMOR
+    Rarity Normal
+    BaseType "Circlet" "Silk" "Robe" "Slipper" "Vestment" "Regalia" "Conjurer" "Wool" "Velvet" "Sorcerer" "Scholar" "Satin" "Samite" "Cage" "Arcanist" "Embroidered"
+    SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - INT ARMOR
     Rarity Magic
@@ -80,9 +29,19 @@ Show   #Gear - INT ARMOR
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR/INT ARMOR
+    Rarity Normal
+    BaseType "Chain" "Ringmail" "Glove" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Crusader Boot" "Coif" "Aventail" "Soldier Helmet" "Crusader Helmet"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - STR/INT ARMOR
     Rarity Magic
     BaseType "Chain" "Ringmail" "Glove" "Crown" "Zealot" "Saint" "Riveted" "Mesh" "Legion" "Great" "Soldier Boot" "Crusader Boot" "Coif" "Aventail" "Soldier Helmet" "Crusader Helmet"
     SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - STR/DEX ARMOR
+    Rarity Normal
+    BaseType "Gauntlet" "Brigandine" "Wyrmscale" "Helm" "Dragonscale" "Scale" "Sallet" "Lamellar" "Full" "Bascinet" "Steelscale" "Serpentscale" "Ironscale" "Hydrascale" "Bronzescale" "Leatherscale"
+    SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR/DEX ARMOR
     Rarity Magic
@@ -90,9 +49,20 @@ Show   #Gear - STR/DEX ARMOR
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - INT/DEX ARMOR
+    Rarity Normal
+    BaseType "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered Garb"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - INT/DEX ARMOR
     Rarity Magic
     BaseType "Mask" "Boot" "Mitt" "Raiment" "Jacket" "Coat" "Armour" "Vest" "Waxed" "Sadist" "Lacquered Garb"
     SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - STR ARMOR (Shield)
+    Class Shield
+    Rarity Normal
+    BaseType "Tower"
+    SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - STR ARMOR (Shield)
     Class Shield
@@ -102,9 +72,21 @@ Show   #Gear - STR ARMOR (Shield)
 
 Show   #Gear - DEX ARMOR (Shield)
     Class Shield
+    Rarity Normal
+    BaseType "Buckler"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - DEX ARMOR (Shield)
+    Class Shield
     Rarity Magic
     BaseType "Buckler"
     SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - INT ARMOR (Shield)
+    Class Shield
+    Rarity Normal
+    BaseType "Spirit"
+    SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - INT ARMOR (Shield)
     Class Shield
@@ -114,15 +96,33 @@ Show   #Gear - INT ARMOR (Shield)
 
 Show   #Gear - STR/INT ARMOR (Shield)
     Class Shield
+    Rarity Normal
+    BaseType "Kite"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - STR/INT ARMOR (Shield)
+    Class Shield
     Rarity Magic
     BaseType "Kite"
     SetTextColor 120 120 230           #Magic "Junk"
 
 Show   #Gear - STR/DEX ARMOR (Shield)
     Class Shield
+    Rarity Normal
+    BaseType "Round"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - STR/DEX ARMOR (Shield)
+    Class Shield
     Rarity Magic
     BaseType "Round"
     SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - INT/DEX ARMOR (Shield)
+    Class Shield
+    Rarity Normal
+    BaseType "Spike"
+    SetTextColor 190 190 190           #Normal "Junk"
 
 Show   #Gear - INT/DEX ARMOR (Shield)
     Class Shield
