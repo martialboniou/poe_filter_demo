@@ -16,6 +16,7 @@ with:
                           1 for a standalone binary (recommended if shared)
      <files>: one or more python scripts' filenames to convert
               (the extension '.py' is not required)""")
+	exit(0)
 
 import importlib
 try:
