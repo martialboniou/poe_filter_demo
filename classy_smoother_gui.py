@@ -7,7 +7,7 @@ import re
 import fileinput
 import sys
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import (QListView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog)
+from PyQt5.QtWidgets import (QListView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox)
 from PyQt5.QtGui import *
 #requires: PyQt5, pygments
 
@@ -141,10 +141,14 @@ class Classy_Smoother_Gui(QMainWindow):
 			self.updatable(False, False, True)
 
 	def com(self, **kwargs):
+		self.critical = None
 		self.status = 'unchanged'
 		self.hidden = False
 		for name, value in kwargs.items():
 			setattr(self, name, value)
+		if self.critical is not None:
+			QMessageBox.critical(self, "Critical", self.critical, QMessageBox.Ok)
+			return
 		self.updatable(self.status == 'changed', not self.hidden)
 
 	def reset(self):
@@ -176,6 +180,7 @@ class SmartblockProcess():
 		self.__known_data = False
 		self.__update_ix = set({}) # smartblocks indexes to update
 		self.__repair_ix = set({}) # smartblocks indexes to repair
+		self.__critical_message = '''Fatal error: inform the maintainer'''
 
 	def get_smartblocks(self):
 		if self.lexer is None:
@@ -268,7 +273,7 @@ class SmartblockProcess():
 		try:
 			key = self._smartblocks[index]
 		except IndexError:
-			print('fatal error: inform the maintainer')
+			self.caller.com(critical = self.__critical_message)
 			return []
 		return self.block_locations[key]
 
@@ -277,7 +282,7 @@ class SmartblockProcess():
 			try:
 				save_file = open(filename, 'w')
 			except IOError:
-				print("cannot write in {0}".format(filename))
+				self.caller.com(critical = '''cannot write in {0}'''.format(filename))
 				return False
 			save_file.write(self.content)
 			save_file.close()
@@ -320,13 +325,13 @@ class SmartblockProcess():
 					try:
 						content.pop(pos)
 					except IndexError:
-						print('fatal error')
+						self.caller.com(critical = self.__critical_message)
 						return False
 				for c in label[::-1]:
 					try:
 						content.insert(pos,c)
 					except IndexError:
-						print('fatal error')
+						self.caller.com(critical = self.__critical_message)
 						return False
 		self.content = ''.join(content)
 		return True
