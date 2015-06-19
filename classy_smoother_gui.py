@@ -7,13 +7,14 @@ import re
 import fileinput
 import sys
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import (QListView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox)
+from PyQt5.QtWidgets import (QTreeView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox)
 from PyQt5.QtGui import *
 #requires: PyQt5, pygments
 
 # FIXME: early ALPHA version; works with same length keywords
 keywords = ('Show', 'Hide')
 reserved = '|'.join(keywords) # will be extended
+smartblock_separator = ' - '
 
 class LootFilterLexer(RegexLexer):
 	name = 'LootFilter'
@@ -66,15 +67,7 @@ class Classy_Smoother_Gui(QMainWindow):
 		if not data_found:
 			self.kill_on_init()
 		else:
-			self.initProcess()
 			self.initWindowUI()
-			self.process.fetch_data() # to check if the filter is consistent
-
-	def initProcess(self):
-		lf = LootFilterLexer()
-		self.process = SmartblockProcess(self.file_content)
-		self.process.lexer = LootFilterLexer()
-		self.smartblocks = self.process.get_smartblocks()
 
 	def initWindowUI(self):
 		self.resetButton = QPushButton("Reset")
@@ -84,42 +77,28 @@ class Classy_Smoother_Gui(QMainWindow):
 		self.overwriteButton.setStyleSheet("background-color: #EFC795")
 		self.overwriteButton.setEnabled(False)
 		self.overwriteButton.clicked.connect(self.overwrite)
-		discardButton = QPushButton("Discard")
-		discardButton.clicked.connect(app.quit)
 		hbox = QHBoxLayout()
 		hbox.addStretch(1)
 		hbox.addWidget(self.overwriteButton)
 		hbox.addWidget(self.resetButton)
-		#hbox.addWidget(discardButton)
 		vbox = QVBoxLayout()
-		self.setWindowTitle('Classy Smoother GUI')
-		self.view = QListView()
+		self.setWindowTitle('Classy Smoother GUI - Tree Edition')
+		self.view = QTreeView()
 		self.setCentralWidget(QWidget())
 		self.scrollLayout = QFormLayout()
 		self.scrollWidget = QWidget()
 		self.scrollWidget.setLayout(self.scrollLayout)
-		vbox.addWidget(self.view) #(self.scrollArea)
+		vbox.addWidget(self.view)
 		vbox.addLayout(hbox)
 		self.scrollLayout.addRow(self.view)
 		self.centralWidget().setLayout(vbox)
-		self.model = QStandardItemModel(self.view)
-		self.model.itemChanged.connect(self.on_item_changed)
-		self.process.caller = self # to inform bad formed database
-		self.statusBar().showMessage(self.file_info.fileName())
-		for (check, text) in self.smartblocks:
-			item = QStandardItem(text[1:]) # CAR is a comment hashtag
-			item.setCheckable(True)
-			if check == 'Show':
-				item.setCheckState(Qt.Checked)
-			self.model.appendRow(item)
+		self.model = SmartblockModel(self.file_content, self)
 		self.view.setModel(self.model)
+		self.view.expandAll()
+		self.view.setAlternatingRowColors(True)
 		self.show()
 
-	def on_item_changed(self, item):
-		self.updatable(True)
-		self.process.smartblock_update(item.row())
-
-	def updatable(self, flag, external_call = False, end_process = False): # temporary hack
+	def inform(self, flag, external_call = False, end_process = False):
 		reset_flag = False # hidden first
 		if flag:
 			if external_call:
@@ -137,30 +116,18 @@ class Classy_Smoother_Gui(QMainWindow):
 		self.overwriteButton.setEnabled(flag)
 
 	def overwrite(self):
-		if self.process.save(self.file_info.absoluteFilePath()):
-			self.updatable(False, False, True)
+		self.overwriteButton.setEnabled(False)
+		self.resetButton.setEnabled(False) # TODO: disable from elsewhere ?!
+		if self.model.save(self.file_info.absoluteFilePath()):
+			self.inform(False, False, True)
 
-	def com(self, **kwargs):
-		self.critical = None
-		self.status = 'unchanged'
-		self.hidden = False
-		for name, value in kwargs.items():
-			setattr(self, name, value)
-		if self.critical is not None:
-			QMessageBox.critical(self, "Critical", self.critical, QMessageBox.Ok)
-			return
-		self.updatable(self.status == 'changed', not self.hidden)
+	def debug(self):
+		self.model.debug()
 
 	def reset(self):
-		for i in self.process.update_ix.copy():
-			item = self.model.item(i)
-			state = item.checkState()
-			if state == Qt.Checked:
-				item.setCheckState(Qt.Unchecked)
-			else:
-				item.setCheckState(Qt.Checked)
+		self.model.resetStatus()
 
-class SmartblockProcess():
+class SmartblockData():
 
 	def __init__(self, lines = ['']):
 		self.content = ''.join(lines)
@@ -178,9 +145,7 @@ class SmartblockProcess():
 		self.__lexer = value
 		self.__known_header = False
 		self.__known_data = False
-		self.__update_ix = set({}) # smartblocks indexes to update
-		self.__repair_ix = set({}) # smartblocks indexes to repair
-		self.__critical_message = '''Fatal error: inform the maintainer'''
+		self.updates = set({}) # smartblocks indexes to repair
 
 	def get_smartblocks(self):
 		if self.lexer is None:
@@ -209,8 +174,8 @@ class SmartblockProcess():
 							pass # hmm
 						else:
 							local_smartblock = local_smartblock.strip() # remove whitespaces left by bad editors
-							self._smartblocks.insert(0,  local_smartblock)
-							self._known_states.insert(0, local_state)
+							self._smartblocks.append(local_smartblock)
+							self._known_states.append(local_state)
 							self.block_locations[local_smartblock] = [index + local_index]
 				if tokenType == Token.Keyword.Reserved and tokenValue in keywords:
 					break
@@ -236,66 +201,27 @@ class SmartblockProcess():
 					self.block_locations[nextTokenValue].append(index)
 					# ensure the Show/Hide block is as declared
 					if tokenValue != self._known_states[self._smartblocks.index(nextTokenValue)]:
-						self.smartblock_update(nextTokenValue, True) # else force internal error
-						if self.caller is not None:
-							self.caller.com(status = 'changed')
+						self.updates.add(self._smartblocks.index(nextTokenValue))
 			try:
 				index, tokenType, tokenValue = self.walker.__next__()
 			except StopIteration:
 				break
 		self.__known_data = True
 
-	def smartblock_update(self, index, force_update = False):
-		if isinstance(index, str):
-			try:
-				index = self._smartblocks.index(index.strip())
-			except ValueError:
-				return
-		# internal error => filter to repair
-		if force_update:
-			self.__repair_ix.add(index)
-		else:
-			if index in self.update_ix:
-				self.__update_ix.remove(index)
-			else:
-				self.__update_ix.add(index)
-		if self.caller is None:
-			return
-		hidden = not not self.update_ix
-		status = "changed" if not not self.__repair_ix or hidden else "unchanged"
-		self.caller.com(status = status, hidden = hidden)
-
-	@property
-	def update_ix(self):
-		return self.__update_ix
-
 	def get_locations(self, index):
 		try:
 			key = self._smartblocks[index]
 		except IndexError:
-			self.caller.com(critical = self.__critical_message)
 			return []
 		return self.block_locations[key]
 
-	def save(self, filename):
-		if self.update():
-			try:
-				save_file = open(filename, 'w')
-			except IOError:
-				self.caller.com(critical = '''cannot write in {0}'''.format(filename))
-				return False
-			save_file.write(self.content)
-			save_file.close()
-			return True
-		return False
-
-	def update(self):
+	def update(self, updates):
 		if not self.__known_data:
 			self.fetch_data()
 		tag_positions = defaultdict(list)
 		new_states = self._known_states.copy()
 		# normal update
-		for i in self.update_ix:
+		for i in updates:
 			# update known states
 			if new_states[i] == keywords[0]:
 				new_states[i] = keywords[1]
@@ -303,12 +229,12 @@ class SmartblockProcess():
 				new_states[i] = keywords[0]
 			tag_positions[new_states[i]].extend(self.get_locations(i))
 		# repair case
-		for i in self.__repair_ix - self.update_ix:
-			tag_positions[self._known_states[i]].extend(self.get_locations(i))
+		for i in self.updates - updates:
+			test = tag_positions[self._known_states[i]]
+			test.extend(self.get_locations(i))
 		# reset when update ok
 		if self.update_content(tag_positions):
-			self.__update_ix = set({})
-			self.__repair_ix = set({})
+			self.updates = set({})
 			self._known_states = new_states
 			return True
 		return False
@@ -316,7 +242,7 @@ class SmartblockProcess():
 	def update_content(self, tag_positions):
 		# tag_positions: new_label -> [positions]
 		# FIXME: hide and show => same size / no offset implemented
-		content = list(self.content) # as mutable string
+		content = list(self.content) # as mutable string; TODO: use bytearray ASAP
 		for label in keywords:
 			previous_label = keywords[1] if label == keywords[0] else keywords[0]
 			p_len = len(previous_label)
@@ -325,17 +251,371 @@ class SmartblockProcess():
 					try:
 						content.pop(pos)
 					except IndexError:
-						self.caller.com(critical = self.__critical_message)
 						return False
 				for c in label[::-1]:
 					try:
 						content.insert(pos,c)
 					except IndexError:
-						self.caller.com(critical = self.__critical_message)
 						return False
 		self.content = ''.join(content)
 		return True
 
+class SmartblockModel(QAbstractItemModel):
+
+	def __init__(self, data, inParent = None):
+		super(SmartblockModel, self).__init__(inParent)
+		self.data = SmartblockData(data)
+		self.window = inParent
+		self.smartblocks = self.create_smartblocks()
+		self.rootItem = RootTreeItem()
+		self.setupModelData()
+		self.__critical_message = '''Fatal error: inform the maintainer'''
+
+	def informWindow(self, **kwargs):
+		if self.window is not None:
+			self.critical = None
+			self.status = 'unchanged'
+			self.hidden = False
+			for name, value in kwargs.items():
+				setattr(self, name, value)
+			if self.critical is not None:
+				QMessageBox.critical(self.window, "Critical", self.critical, QMessageBox.Ok)
+				return
+			self.window.inform(self.status == 'changed', not self.hidden)
+
+	def __get_data(self):
+		self.data.lexer = LootFilterLexer()
+		self.data.fetch_data() # to get orphans or check consistency (TODO: orphans unmanaged yet)
+		if self.data.updates:
+			self.informWindow(status = 'changed')
+		self.smartblocks = self.create_smartblocks()
+
+	def create_smartblocks(self):
+		if self.data.lexer is None:
+			self.__get_data()
+			return self.smartblocks
+		sbs = self.data.get_smartblocks()
+		smartblocks = []
+		leaves = []
+		smartblock_collector = defaultdict(Smartblock)
+		for idx, (status, comment) in enumerate(sbs):
+			name = comment[1:]
+			l = name.split(smartblock_separator)
+			root = l[0]
+			full_l = []
+			len_l = len(l)
+			if len_l > 1:
+				for i in range(2, len_l+1):
+					full_l.append(smartblock_separator.join(l[0:i]))
+			full_l.insert(0, root)
+			leaves.append(name)
+			parent = None
+			for n, full_n in zip(l, full_l):
+				if full_n in smartblock_collector.keys():
+					sm = smartblock_collector[full_n]
+					if sm.index is None and full_n in leaves:
+						sm.index = idx # case: 'This' defined after 'This - That'
+						sm.status = status
+				else:
+					if full_n == full_l[-1]:
+						index = idx
+					else:
+						index = None
+					# status of unreferenced nodes is None by default; updated later
+					sm = Smartblock(index, (None if index is None else status, n))
+					smartblock_collector[full_n] = sm
+					if full_n == full_l[0]: # leaf
+						smartblocks.append(sm)
+				if parent is not None:
+					if sm not in parent.children: # TODO: test me
+						parent.addChild(sm)
+				parent = sm
+		return smartblocks
+
+	def __processData(self, tree_item, node):
+		for d in node.children:
+			item = SmartblockTreeItem(tree_item, d)
+			self.__processData(item, d) # process children first then update status
+			tree_item.AddChild(item)
+		smartblock = tree_item.smartblock
+		if smartblock.status is None:
+			for key in keywords:
+				if all(n.status == key for n in node.children):
+					tree_item.smartblock.status = key
+					break
+
+	def setupModelData(self):
+		for smart in self.smartblocks:
+			smart_item = SmartblockTreeItem(self.rootItem, smart)
+			self.__processData(smart_item, smart)
+			self.rootItem.AddChild(smart_item)
+			self.updates = set({}) # collect indexes of smartblocks to update (faster)
+			self.indexes = set({}) # collect indexes in tree model to reset   (faster)
+
+	def index(self, row, column, parentindex):
+		if not self.hasIndex(row, column, parentindex):
+			return QModelIndex()
+		parent_item = None
+		if not parentindex.isValid():
+			parent_item = self.rootItem
+		else:
+			parent_item = parentindex.internalPointer()
+		child_item = parent_item.GetChild(row)
+		if child_item:
+			return self.createIndex(row, column, child_item)
+		else:
+			return QModelIndex()
+
+	def parent(self, childindex):
+		if not childindex.isValid():
+			return QModelIndex()
+		child_item = childindex.internalPointer()
+		if not child_item:
+			return QModelIndex()
+		parent_item = child_item.GetParent()
+		if parent_item == self.rootItem:
+			return QModelIndex()
+		return self.createIndex(parent_item.Row(), 0, parent_item)
+
+	def rowCount(self, parentindex):
+		if parentindex.column() > 0:
+			return 0
+		item = None
+		if not parentindex.isValid():
+			item = self.rootItem
+		else:
+			item = parentindex.internalPointer()
+		return item.GetChildCount()
+
+	def columnCount(self, parentindex):
+		if not parentindex.isValid():
+			return self.rootItem.ColumnCount()
+		return parentindex.internalPointer().ColumnCount()
+
+	def data(self, index, role):
+		if not index.isValid():
+			return QVariant()
+		parent_item = index.internalPointer()
+		if role == Qt.DisplayRole:
+			data = parent_item.Data(index.column())
+			return data
+		if role == Qt.CheckStateRole:
+			if parent_item.Status(index.column()) is None:
+				return QVariant(Qt.PartiallyChecked)
+			if parent_item.Status(index.column()) == keywords[0]:
+				return QVariant(Qt.Checked)
+			else:
+				return QVariant(Qt.Unchecked)
+		if role == Qt.SizeHintRole:
+			return QSize(20, 20)
+		return QVariant()
+
+	def setData(self, index, value, role):
+		if not index.isValid():
+			return False
+		if role == Qt.CheckStateRole:
+			for checkSymbol, keyword in zip(
+					[Qt.Checked, Qt.Unchecked],
+					keywords):
+				if value == checkSymbol:
+					# refresh updates
+					self.refreshUpdates(index, keyword)
+					# change status
+					index.internalPointer().SetStatus(keyword, index.column())
+					# propagate to parent
+					parent_index = self.parent(index)
+					if parent_index.isValid():
+						self.dataChanged.emit(parent_index, index)
+					# propagate to children
+					self.emitDataChangedForChildren(index)
+					break
+		status, hidden = 'changed', False
+		if self.updates:
+			hidden = True
+		else:
+			if not self.data.updates:
+				status = 'unchanged'
+		self.informWindow(status = status, hidden = hidden)
+		return True
+
+	def emitDataChangedForChildren(self, index):
+		count = self.rowCount(index)
+		if count:
+			for child_row in range(0, count):
+				child_index = self.index(child_row, index.column(), index)
+				self.emitDataChangedForChildren(child_index)
+				self.dataChanged.emit(index, child_index)
+
+	def refreshUpdates(self, index, new_status):
+		node = index.internalPointer()
+		if isinstance(node, SmartblockTreeItem):
+			inode = node.smartblock.index
+			name = node.smartblock.name
+			status = node.smartblock.status
+			count = self.rowCount(index)
+			if inode is not None and status is not None and status != new_status:
+				if inode in self.updates:
+					self.updates.remove(inode)
+					self.indexes.remove(index)
+				else:
+					self.updates.add(inode)
+					self.indexes.add(index)
+				return
+			if count:
+				for child_row in range(0, count):
+					child_index = self.index(child_row, index.column(), index)
+					# refresh children updates if inode is None (ie virtual parent)
+					self.refreshUpdates(child_index, new_status)
+
+	def flags(self, index):
+		if index.column() == 0:
+			return QAbstractItemModel.flags(self, index) | Qt.ItemIsUserCheckable
+
+	def headerData(self, column, orientation, role):
+		if (orientation == Qt.Horizontal and role == Qt.DisplayRole):
+			try:
+				return self.rootItem.Data(column)
+			except IndexError:
+				pass
+			return QVariant()
+
+	def save(self, filename):
+		if self.data.update(self.updates):
+			self.updates = set({})
+			self.indexes = set({})
+			try:
+				save_file = open(filename, 'w')
+			except IOError:
+				self.informWindow(critical = '''cannot write in {0}'''.format(filename))
+				return False
+			save_file.write(self.data.content)
+			save_file.close()
+			return True
+		return False
+
+	def resetStatus(self):
+		# FIXME: disconnect self.window.view
+		role = Qt.CheckStateRole
+		for index in self.indexes.copy():
+			state = self.itemData(index)[role]
+			new_state = Qt.Unchecked if state == Qt.Checked else Qt.Checked
+			self.setData(index, new_state, role)
+		self.indexes = set({})
+		self.updates = set({})
+
+class BaseTreeItem(object):
+	def __init__(self, inParentItem):
+		self.parent = inParentItem
+		self.children = []
+
+	def AddChild(self, inChild):
+		self.children.append(inChild)
+
+	def GetChild(self, row):
+		return self.children[row]
+
+	def GetChildCount(self):
+		return len(self.children)
+
+	def GetParent(self):
+		return self.parent
+
+	def Row(self):
+		if self.parent:
+			return self.parent.children.index(self)
+		return 0
+
+	def ColumnCount(self):
+		return 1
+
+	def Data(self, inColumn):
+		raise Exception("Override me!")
+
+	def Copy(self, baseTreeItem):
+		pass
+
+class RootTreeItem(BaseTreeItem):
+	def __init__(self):
+		super(RootTreeItem, self).__init__(None) # no parent item
+
+	def Data(self, inColumn):
+		if inColumn == 0:
+			return "Smartblocks"
+		return ''
+
+class SmartblockTreeItem(BaseTreeItem):
+	def __init__(self, inParent, inSmartblock):
+		super(SmartblockTreeItem, self).__init__(inParent)
+		self.smartblock = inSmartblock
+
+	def Data(self, inColumn):
+		if inColumn == 0:
+			return self.smartblock.name
+		return ''
+
+	def Status(self, inColumn):
+		if inColumn == 0:
+			return self.smartblock.status
+		raise ValueError('no status')
+
+	def SetStatus(self, status, inColumn):
+		if inColumn == 0 and not isinstance(self, RootTreeItem):
+			self.smartblock.updateStatus(status)
+			# update parent
+			parent = self.GetParent()
+			if not isinstance(parent, RootTreeItem):
+				if parent.smartblock.index is None:
+					found = False
+					for key in keywords:
+						if all(child.status == key for child in parent.smartblock.children):
+							parent.SetStatus(key, inColumn)
+							found = True
+							break
+					if not found:
+						parent.SetStatus(None, inColumn)
+			# update children
+			if self.smartblock.index is None:
+				self.__SetChildStatus(status)
+		else:
+			raise ValueError('no status')
+
+	def __SetChildStatus(self, status):
+		if status in keywords:
+			for child in self.children:
+				child.__SetChildStatus(status)
+				child.smartblock.updateStatus(status)
+
+	def Index(self, inColumn):
+		if inColumn == 0:
+			return self.smartblock.index
+		raise IndexError('no index')
+
+class Smartblock():
+
+	def __init__(self, inIndex, inSmartblockData):
+		self.children = []
+		self.status = inSmartblockData[0]
+		self.name = inSmartblockData[1]
+		self.index = inIndex
+
+	def addChild(self, inSmartblock):
+		self.children.append(inSmartblock)
+
+	def updateStatus(self, status):
+		# output = smartblock's index in data
+		if self.status != status:
+			self.status = status
+		return self.index
+
+	def count(self):
+		return len(self.children)
+
+	def __str__(self): # NOTE: unused (written for tests!)
+		return "Smartblock{"+"{0}{1}{2}{3}".format(
+				self.name, '' if self.index is None else '[index='+str(self.index)+']',
+				'' if not self.children else '({0})'.format('|'.join([str(c) for c in self.children])),
+				'' if self.status is None else ' -> {0}'.format(self.status)
+				)+"}"
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
