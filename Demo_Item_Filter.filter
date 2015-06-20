@@ -1,0 +1,1270 @@
+###Antnee's Classy Filter!  v1.61c - hondana version
+###Purpose: demo file for classy_smoother_gui version 0.2
+###Note: This is an UNOFFICIAL version including:
+###   - 000a   Highlight additional rarest currency
+###   - 000c   Highlight 10+ Quality Gems only
+###   - different smartblocks
+###   - new border color for Card
+
+###    Open a new .txt document and paste the contents of this page into it
+###    USE ANSI ENCODING IF YOU USE NOTEPAD++ OR ANY OTHER TEXT EDITOR
+###    Click File/Save As
+###    Select "All Files" from the dropdown menu at the bottom
+###    Enter "antnee.filter" as the filename
+###    Save in C:/Users/Documents/My Games/Path of Exile
+
+###        Section Overview
+### 000a   Highlight Rarest currency
+### 000b   Slightly darken common currency
+### 000c   Highlight quality and rare gems
+### 000g   Slightly darken zero quality gems
+### 000d   Highlight 5 and 6 links
+### 000e   Chaos/Regal recipe items
+### 000f   Highlight based on number/color of sockets
+### 010f   RGB / Perfect Quality
+### 000h   Other misc items of interest, rares and uniques
+### 000i   Show select white items (for chancing or personal preference)
+### 001j   ----SCALING ITEMLEVEL FILTER (Begin)
+### 001k   ----Brighten early level jewelry, show non-rare midlevel jewelry
+### 001l   ----Hide Obsolete Flasks
+### 001m   ----Brighten Normal Flask Upgrades for first 3 levels they're available
+### 001n   ----Brighten Magic Flask Upgrades for first 3 levels they're available
+### 001o   ----Flasks / Quality flasks
+### 001p   ----Highlight early game 3Links
+### 001q   ----Exceptions to itemlevel filter for links / sockets
+### 001r   ----Hide obsolete gear
+### 011r   ----Specific Equipment Toggles
+### 001s   ----SCALING ITEMLEVEL FILTER (End)
+### 000t   Hide white/magic items
+
+
+###    SmartBlocks - Use search/replace all to toggle sections of the script on/off
+###    Example:  Replace all instances of "Show   #Jewelry" with "Show   #Jewelry"
+###    to hide all white/blue jewelry.  (see original post for more details)
+
+###        Show   #Misc - Chance Items
+###        Show   #Misc - Chisel Hammers
+###        Show   #Gem - Active Skill Gems Zero Quality
+###        Show   #Gem - Support Gems Zero Quality
+###        Show   #Jewelry - Magic ILVL <= 68
+###        Show   #Jewelry - Normal ILVL <= 68
+###        Show   #Jewelry - Magic ILVL > 68
+###        Show   #Jewelry - Normal ILVL > 68
+###        Show   #Flask - Quality
+###        Show   #Flask - Utility
+###        Show   #Flask - Life/Mana ILVL > 68
+###        Hide   #Gear - Bow
+###        Show   #Gear - Bow - Quiver
+###        Hide   #Gear - One Hand - Wand
+###        Show   #Gear - One Hand - Axe
+###        Hide   #Gear - One Hand - Dagger
+###        Hide   #Gear - One Hand - Sword
+###        Show   #Gear - One Hand - Sword - Thrusting
+###        Hide   #Gear - One Hand - Mace
+###        Hide   #Gear - One Hand - Claw
+###        Hide   #Gear - One Hand - Sceptre
+###        Show   #Gear - Two Hand - Sword
+###        Show   #Gear - Two Hand - Mace
+###        Show   #Gear - Two Hand - Axe
+###        Show   #Gear - Two Hand - Staff
+###        Show   #Gear - Armour - STR Armour
+###        Show   #Gear - Armour - DEX Armour
+###        Show   #Gear - Armour - INT Armour
+###        Show   #Gear - Armour - STR/INT Armour
+###        Show   #Gear - Armour - STR/DEX Armour
+###        Show   #Gear - Armour - INT/DEX Armour
+###        Show   #Gear - Shield - STR Armour
+###        Show   #Gear - Shield - DEX Armour
+###        Show   #Gear - Shield - INT Armour
+###        Show   #Gear - Shield - STR/INT Armour
+###        Show   #Gear - Shield - STR/DEX Armour
+###        Show   #Gear - Shield - INT/DEX Armour
+###        Show   #Obsolete - Gear - Exceptions for Linked Sockets
+###        Hide   #Obsolete - Gear
+###        Hide   #Obsolete - Flask
+###        Hide   #Obsolete
+
+
+###    SmartColors
+###        SetBackgroundColor 0 0 0 0         #Hidden Flask Opacity
+###        SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+###        SetTextColor 240 240 240           #Normal Flask Upgrade
+###        SetTextColor 125 175 255           #Magic Flask Upgrade
+###        SetTextColor 190 190 190           #Normal "Junk"
+###        SetTextColor 120 120 230           #Magic "Junk"
+###        SetBorderColor 70 20 50 255        #Chaos Recipe Border
+###        SetBorderColor 40 80 30 255        #Regal Recipe Border
+###        SetTextColor 180 180 180           #Normal Jewelry ILVL > 68
+###        SetTextColor 120 120 230           #Magic Jewelry ILVL > 68
+###        SetTextColor 15 135 120            #Gems Zero Quality
+###        SetTextColor 135 120 90            #Common Currency
+###        SetTextColor 210 190 170 255       #Uncommon Currency
+###        SetTextColor 240 200 150 255       #Rarest Currency
+###        SetTextColor 255 255 255           #Normal Highlight
+###        SetTextColor 125 175 255           #Magic Highlight
+###        SetTextColor 255 255 119 255       #Rare Highlight
+
+
+# Section: Highlight Rarest currency - 000a
+Show   #Valuable
+    BaseType "Exalted Orb" "Divine Orb" "Mirror of Kalandra" "Eternal Orb" "Albino Rhoa Feather" "Fishing Rod" "Alchemy Shard" "Mortal Hope" "Sacrifice at Midnight"
+    SetTextColor 240 200 150 255       #Rarest Currency
+    SetBorderColor 255 255 255 255     #Rarest Currency Border
+    SetBackgroundColor 0 0 0 255       #Rarest Currency Background
+    SetFontSize 42
+    PlayAlertSound 8 100
+
+Show
+    BaseType "Gemcutter's Prism" "Regal Orb" "Vaal Orb" "Chaos Orb"
+    SetTextColor 190 170 150 255       #Uncommon Currency
+    SetBackgroundColor 0 0 0 250       #Uncommon Currency Background
+    SetBorderColor 60 40 20 255        #Uncommon Currency Border
+    SetFontSize 37
+
+# Section: Slightly darken common currency - 000b
+Show
+    BaseType "Scroll of Wisdom" "Portal Scroll" "Orb of Transmutation" "Orb of Augmentation" "Orb of Alteration" "Armourer's Scrap"
+    SetTextColor 135 120 90            #Low Currency
+    SetBorderColor 0 0 0 20            #Low Currency Border
+
+Show
+    Class Currency
+    SetBackgroundColor 0 0 0 245
+    SetBorderColor 0 0 0 255
+
+
+# Section: Highlight quality and rare gems - 000c
+Show
+    Class Gem
+    Quality > 9
+    SetBackgroundColor 0 30 20 255
+    SetBorderColor 0 50 160
+
+Show
+    Class Gem
+    BaseType "Empower" "Enhance" "Enlighten" "Portal" "Detonate Mines"
+    SetBackgroundColor 0 30 20 255
+    SetBorderColor 0 50 160
+
+
+# Section: Slightly darken zero quality gems - 000g
+Show   #Gem - Active Skill Gems Zero Quality
+    Class Active
+    SetTextColor 15 135 120            #Gems Zero Quality
+
+Show   #Gem - Support Gems Zero Quality
+    Class Gem
+    SetTextColor 15 135 120            #Gems Zero Quality
+
+
+# Section: Highlight 5 and 6 links - 000d
+Show
+    Rarity = Normal
+    LinkedSockets = 6
+    SetBackgroundColor 20 20 20 255
+    SetBorderColor 180 180 180
+    SetTextColor 255 255 255           #Normal Highlight
+    SetFontSize 42
+    PlayAlertSound 7 100
+
+Show
+    Rarity = Magic
+    LinkedSockets = 6
+    SetBackgroundColor 0 20 40 255
+    SetTextColor 125 175 255           #Magic Highlight
+    SetBorderColor 0 150 200
+    SetFontSize 42
+    PlayAlertSound 7 100
+
+Show
+    Rarity = Rare
+    LinkedSockets = 6
+    SetBackgroundColor 30 30 0 255
+    SetBorderColor 180 180 60
+    SetTextColor 255 255 119 255       #Rare Highlight
+    SetFontSize 42
+    PlayAlertSound 7 100
+
+Show
+    Rarity = Unique
+    SocketGroup WWWWWW
+    BaseType "Simple Robe"
+
+Show
+    Rarity = Unique
+    LinkedSockets = 6
+    SetBackgroundColor 30 10 0 255
+    SetBorderColor 255 120 80
+    SetTextColor 180 100 20
+    SetFontSize 42
+
+Show
+    Rarity = Normal
+    LinkedSockets = 5
+    SetBackgroundColor 20 20 20 255
+    SetBorderColor 0 0 0 255
+    SetTextColor 255 255 255           #Normal Highlight
+    SetFontSize 36
+    PlayAlertSound 7
+
+Show
+    Rarity = Magic
+    LinkedSockets = 5
+    SetBackgroundColor 0 20 40 255
+    SetBorderColor 0 0 0 255
+    SetTextColor 125 175 255           #Magic Highlight
+    SetFontSize 36
+    PlayAlertSound 7
+
+Show
+    Rarity = Rare
+    LinkedSockets = 5
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 0 0 0 255
+    SetTextColor 255 255 119 255       #Rare Highlight
+    SetFontSize 36
+    PlayAlertSound 7
+
+Show
+    Rarity = Unique
+    LinkedSockets = 5
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 0 0 0 255
+    SetTextColor 255 100 20
+    SetFontSize 36
+
+
+
+# Section: Highlight 6 socket items, and items with white sockets - 000f
+Show
+    Rarity Normal
+    SocketGroup W
+    SetBorderColor 40 40 40
+    SetTextColor 255 255 255           #Normal Highlight
+
+Show
+    Rarity Magic
+    SocketGroup W
+    SetBorderColor 30 40 60
+    SetTextColor 125 175 255           #Magic Highlight
+
+Show
+    Rarity Rare
+    SocketGroup W
+    SetBorderColor 60 40 30
+
+Show
+    Rarity Normal
+    Sockets = 6
+    SetTextColor 255 255 255           #Normal Highlight
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 0 0 0 255
+    SetFontSize 35
+    PlayAlertSound 5
+
+Show
+    Rarity Magic
+    Sockets = 6
+    SetTextColor 125 175 255           #Magic Highlight
+    SetBackgroundColor 0 20 40 255
+    SetBorderColor 0 0 0 255
+    SetFontSize 35
+    PlayAlertSound 5
+
+Show
+    Rarity Rare
+    Sockets = 6
+    SetTextColor 255 255 119 255       #Rare Highlight
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 0 0 0 255
+    SetFontSize 35
+    PlayAlertSound 5
+
+
+# Section: Emphasis on quality high level rares for chaos and regal recipe - 000e
+Show
+    Rarity Rare
+    Quality >= 15
+    ItemLevel >= 75
+    Class Bow "Two" Stave "Helm" "Boot" "Glove" "Body"
+    SetTextColor 255 255 119 255       #Rare Highlight
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 40 80 30 255        #Regal Recipe Border
+
+Show
+    Rarity Rare
+    Class Ring Belt Amulet
+    ItemLevel >= 75
+    SetTextColor 255 255 119 255       #Rare Highlight
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 40 80 30 255        #Regal Recipe Border
+
+Show
+    Rarity Rare
+    Quality >= 15
+    ItemLevel >= 60
+    Class Bow "Two" Stave "Helm" "Boot" "Glove" "Body"
+    SetTextColor 255 255 119 255       #Rare Highlight
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 70 20 50 255        #Chaos Recipe Border
+
+Show
+    Rarity Rare
+    Class Ring Belt Amulet
+    ItemLevel >= 60
+    SetTextColor 255 255 119 255       #Rare Highlight
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 70 20 50 255        #Chaos Recipe Border
+
+
+# Section: RGB / Perfect Quality Subsection - 010f
+Show
+    Rarity Normal
+    Height <= 4
+    Width = 1
+    SocketGroup RGB
+    ItemLevel >= 70
+    SetTextColor 255 255 255           #Normal Highlight
+    SetBackgroundColor 0 0 0 255
+
+Show
+    Rarity Magic
+    Height <= 4
+    Width = 1
+    SocketGroup RGB
+    ItemLevel >= 70
+    SetTextColor 125 175 255           #Magic Highlight
+    SetBackgroundColor 0 15 25 255
+    SetBorderColor 0 0 0 255
+
+Show
+    Rarity Normal
+    Height 2
+    Width 2
+    SocketGroup RGB
+    ItemLevel >= 70
+    SetTextColor 255 255 255           #Normal Highlight
+    SetBackgroundColor 0 0 0 255
+
+Show
+    Rarity Magic
+    Height 2
+    Width 2
+    SocketGroup RGB
+    ItemLevel >= 70
+    SetTextColor 125 175 255           #Magic Highlight
+    SetBackgroundColor 0 15 25 255
+    SetBorderColor 0 0 0 255
+
+Show    Large Items
+    Rarity Normal
+    SocketGroup RGB
+    ItemLevel >= 70
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show    Large Items
+    Rarity Magic
+    SocketGroup RGB
+    ItemLevel >= 70
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show
+    Rarity Normal
+    SocketGroup RGB
+    ItemLevel <= 10
+    SetTextColor 255 255 255           #Normal Highlight
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 55 55 55
+
+Show
+    Rarity Magic
+    SocketGroup RGB
+    ItemLevel <= 10
+    SetTextColor 125 175 255           #Magic Highlight
+    SetBackgroundColor 0 15 25 255
+    SetBorderColor 20 70 40
+
+Show
+    Rarity Normal
+    SocketGroup RGB
+    ItemLevel < 70
+    SetTextColor 255 255 255           #Normal Highlight
+    SetBackgroundColor 0 0 0 255
+    SetBorderColor 0 0 0 255
+
+Show
+    Rarity Magic
+    SocketGroup RGB
+    ItemLevel < 70
+    SetTextColor 125 175 255           #Magic Highlight
+    SetBackgroundColor 0 15 25 255
+    SetBorderColor 0 0 0 255
+
+Show   #Misc - Perfect Quality
+    Rarity Normal
+    Quality = 20
+    ItemLevel < 68
+    SetTextColor 255 255 255           #Normal Highlight
+
+Show   #Misc - Perfect Quality
+    Rarity Normal
+    Quality = 20
+    ItemLevel >= 68
+    Height < 4
+    Width = 1
+    SetTextColor 255 255 255           #Normal Highlight
+
+Show   #Misc - Perfect Quality
+    Rarity Normal
+    Quality = 20
+    ItemLevel >= 68
+    Height = 2
+    Width = 2
+    SetTextColor 255 255 255           #Normal Highlight
+
+
+# Section: Misc items of interest, rares, uniques - 000h
+Show   #Misc - Divination Cards
+    Class Card
+    SetTextColor 190 170 150 255       #Uncommon Currency
+    SetBackgroundColor 0 0 0 250       #Uncommon Currency Background
+    SetBorderColor 191 109 16          #Pantone Metallic 8963 C
+    SetFontSize 37
+
+Show
+    Rarity Magic
+    Class Jewel
+    SetTextColor 125 175 255           #Magic Highlight
+    SetBorderColor 0 0 0 255
+
+Show
+    Rarity Rare
+    Class Jewel
+    SetTextColor 255 255 119 255       #Rare Highlight
+    SetBorderColor 0 0 0 255
+
+Show
+    Rarity = Rare
+    SetTextColor 230 230 107 230       #Rare
+
+Show
+    Rarity = Unique
+
+Show   #Flask - Quality
+    Rarity Normal
+    Class Flask
+    Quality >= 10
+    SetTextColor 225 225 225           #Quality Normal Flask
+
+Show   #Flask - Quality
+    Rarity Magic
+    Class Flask
+    Quality >= 10
+    SetTextColor 150 150 255           #Quality Magic Flask
+
+Show
+    Rarity Magic
+    Class Map
+    SetBorderColor 145 160 240
+    SetTextColor 140 150 240
+
+Show
+    Class "Map Fragment" Quest "Hideout" "Micro" "Map"
+
+Show   #Flask - Utility
+	Rarity Normal
+    Class "Utility Flasks"
+	ItemLevel >= 70
+	SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Flask - Utility
+	Rarity Magic
+    Class "Utility Flasks"
+	ItemLevel >= 70
+	SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Bow - Quiver
+    Rarity Normal
+    Class Quiver
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Bow - Quiver
+    Rarity Magic
+    Class Quiver
+    SetTextColor 120 120 230           #Magic "Junk"
+
+# Section: Chance items, chisel hammers - 000i
+### To show various items (for chancing, vendor recipes, or whatever), add
+### them to the following blocks.
+### One space between each item and use quotation marks as shown.
+Show   #Misc - Chance Items
+    Rarity = Normal
+    BaseType "Sacrificial Garb"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Misc - Chisel Hammers
+    Rarity = Normal
+    BaseType "Gavel" "Stone Hammer" "Rock Breaker"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Misc - Chisel Hammers
+    Rarity Magic
+    Quality >= 12
+    BaseType "Gavel" "Stone Hammer" "Rock Breaker"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+
+# Section: SCALING FILTER BEGIN - 001j
+###        SCALING FILTER BEGIN
+
+
+# Section: Brighten early level jewelry, show non-rare midlevel jewelry - 001k
+Show   #Jewelry - Normal ILVL <= 68
+    Rarity Normal
+    Class Ring Amulet Belt
+    ItemLevel <= 7
+    SetTextColor 255 255 255           #Normal Highlight
+
+Show   #Jewelry - Magic ILVL <= 68
+    Rarity Magic
+    Class Ring Amulet Belt
+    ItemLevel <= 7
+    SetTextColor 125 175 255           #Magic Highlight
+
+Show   #Jewelry - Magic ILVL <= 68
+    Rarity = Magic
+    Class Ring Amulet Belt
+    ItemLevel <= 68
+
+Show   #Jewelry - Normal ILVL <= 68
+    Rarity = Normal
+    Class Ring Amulet Belt
+    ItemLevel <= 68
+
+Show   #Jewelry - Normal ILVL > 68
+    Rarity = Normal
+    Class Ring Amulet Belt
+    ItemLevel > 68
+    SetTextColor 180 180 180           #Normal Jewelry ILVL > 68
+
+Show   #Jewelry - Magic ILVL > 68
+    Rarity = Magic
+    Class Ring Amulet Belt
+    ItemLevel > 68
+    SetTextColor 120 120 230           #Magic Jewelry ILVL > 68
+
+
+# Section: Hide Obsolete Flasks - 001l
+Hide   #Obsolete - Flask
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    ItemLevel > 12
+    DropLevel <= 6
+    SetBackgroundColor 0 0 0 0         #Hidden Flask Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Flask
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    ItemLevel > 18
+    DropLevel <= 12
+    SetBackgroundColor 0 0 0 0         #Hidden Flask Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Flask
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    ItemLevel > 24
+    DropLevel <= 18
+    SetBackgroundColor 0 0 0 0         #Hidden Flask Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Flask
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    ItemLevel > 30
+    DropLevel <= 24
+    SetBackgroundColor 0 0 0 0         #Hidden Flask Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Flask
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    ItemLevel > 45
+    DropLevel <= 40
+    SetBackgroundColor 0 0 0 0         #Hidden Flask Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Flask
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    ItemLevel > 50
+    DropLevel < 45
+    SetBackgroundColor 0 0 0 0         #Hidden Flask Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Flask
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    ItemLevel > 65
+    DropLevel < 60
+    SetBackgroundColor 0 0 0 0         #Hidden Flask Opacity
+    SetFontSize 34
+
+
+# Section: Brighten Normal Flask Upgrades for the first 3 levels they become available - 001m
+Show   #Flask - Utility
+    Rarity Normal
+    Class "Utility"
+    ItemLevel <= 15
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask - Utility
+    Class "Utility"
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 6
+    ItemLevel >= 3
+    BaseType "Medium"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 9
+    ItemLevel >= 5
+    BaseType "Large"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 15
+    ItemLevel >= 12
+    BaseType "Greater"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 21
+    ItemLevel >= 18
+    BaseType "Grand"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 27
+    ItemLevel >= 24
+    BaseType "Giant"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 33
+    ItemLevel >= 30
+    BaseType "Colossal"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 39
+    ItemLevel >= 36
+    BaseType "Sacred"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 45
+    ItemLevel >= 42
+    BaseType "Hallowed"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 51
+    ItemLevel >= 48
+    BaseType "Sanctified"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 62
+    ItemLevel >= 60
+    BaseType "Divine"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask
+    Rarity Normal
+    Class Flask
+    ItemLevel <= 67
+    ItemLevel >= 65
+    BaseType "Eternal"
+    SetTextColor 240 240 240           #Normal Flask Upgrade
+
+Show   #Flask - Life/Mana ILVL > 68
+	Rarity Magic
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+	ItemLevel > 68
+    DropLevel > 59
+	SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Flask - Life/Mana ILVL > 68
+	Rarity Normal
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+	ItemLevel > 68
+    DropLevel > 59
+	SetTextColor 190 190 190           #Normal "Junk"
+
+
+# Section: Highlight magic flask upgrades - 001n
+Show   #Flask - Utility
+    Rarity Magic
+    Class "Utility"
+    ItemLevel <= 15
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 6
+    ItemLevel >= 3
+    BaseType "Medium"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 9
+    ItemLevel >= 5
+    BaseType "Large"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 15
+    ItemLevel >= 12
+    BaseType "Greater"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 21
+    ItemLevel >= 18
+    BaseType "Grand"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 27
+    ItemLevel >= 24
+    BaseType "Giant"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 33
+    ItemLevel >= 30
+    BaseType "Colossal"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 39
+    ItemLevel >= 36
+    BaseType "Sacred"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 45
+    ItemLevel >= 42
+    BaseType "Hallowed"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 51
+    ItemLevel >= 48
+    BaseType "Sanctified"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 63
+    ItemLevel >= 60
+    BaseType "Divine"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+Show   #Flask
+    Rarity Magic
+    Class Flask
+    ItemLevel <= 68
+    ItemLevel >= 65
+    BaseType "Eternal"
+    SetTextColor 125 175 255           #Magic Flask Upgrade
+
+
+# Section: Use normal text brightness for flasks, brightened for quality over 10 - 001o
+Show   #Flask - Quality
+    Rarity Normal
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    DropLevel < 66
+    Quality >= 10
+    SetTextColor 225 225 225           #Quality Normal Flask
+
+Show   #Flask - Quality
+    Rarity Magic
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    DropLevel < 66
+    Quality >= 10
+    SetTextColor 150 150 255           #Quality Magic Flask
+
+Show   #Flask
+    Class "Life Flask" "Mana Flask" "Hybrid Flask"
+    DropLevel < 66
+
+# Section: Highlight Early game 3Links - 001p
+Show   #Obsolete Gear Exceptions for Linked Sockets
+    Rarity Normal
+    ItemLevel < 7
+    LinkedSockets >= 3
+    SetTextColor 255 255 255           #Normal Highlight
+
+Show   #Obsolete Gear Exceptions for Linked Sockets
+    Rarity Magic
+    ItemLevel < 7
+    LinkedSockets >= 3
+    SetTextColor 125 175 255           #Magic Highlight
+
+
+# Section: Exceptions to ItemLevel filtering for Linked Sockets - 001q
+Show   #Obsolete Gear Exceptions for Linked Sockets
+    ItemLevel < 65
+    ItemLevel >= 50
+    DropLevel > 40
+    LinkedSockets = 4
+
+Show   #Obsolete Gear Exceptions for Linked Sockets
+    ItemLevel < 50
+    ItemLevel >= 40
+    DropLevel > 27
+    LinkedSockets = 4
+
+Show   #Obsolete Gear Exceptions for Linked Sockets
+    ItemLevel < 40
+    ItemLevel >= 30
+    DropLevel > 15
+    LinkedSockets = 4
+
+Show   #Obsolete Gear Exceptions for Linked Sockets
+    ItemLevel < 30
+    ItemLevel >= 20
+    LinkedSockets = 4
+
+Show   #Obsolete Gear Exceptions for Linked Sockets
+    ItemLevel < 20
+    LinkedSockets >= 3
+
+
+# Section:  Master itemlevel filter control - 001r
+### If too many items are appearing for your taste,
+### bring the DropLevel closer to the ItemLevel.
+### Do not Exceed!  Do not alter ItemLevels!
+Hide   #Obsolete - Gear
+    ItemLevel >= 10
+    DropLevel <= 5
+    Sockets < 3
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 15
+    DropLevel <= 10
+    Sockets < 3
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 20
+    DropLevel <= 13
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 25
+    DropLevel <= 20
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 30
+    DropLevel <= 25
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 35
+    DropLevel <= 30
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 40
+    DropLevel <= 35
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 45
+    DropLevel <= 40
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 50
+    DropLevel <= 46
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 55
+    DropLevel <= 52
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 60
+    DropLevel < 57
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 65
+    DropLevel < 60
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    ItemLevel >= 70
+    DropLevel < 60
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    Rarity = Magic
+    ItemLevel >= 72
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+Hide   #Obsolete - Gear
+    Rarity = Normal
+    Class Shield "One Hand" Dagger Claw Wand Sceptre Helmet Glove Boots
+    ItemLevel >= 74
+    Sockets < 3
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+
+Hide   #Obsolete - Gear
+    Rarity = Normal
+    Class Shield "One Hand" Dagger Claw Wand Sceptre
+    ItemLevel >= 78
+    LinkedSockets < 3
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+
+Hide   #Obsolete - Gear
+    Rarity = Normal
+    Class Helmet Glove Boots Body
+    ItemLevel >= 78
+    LinkedSockets < 4
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+
+
+# Section: Specific Equipment Toggles - 011r
+Hide   #Gear - Bow
+    Rarity Normal
+    Class Bow
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Hide   #Gear - Bow
+    Rarity Magic
+    Class Bow
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Two Hand - Staff
+    Rarity Normal
+    Class Stave
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Two Hand - Staff
+    Rarity Magic
+    Class Stave
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Hide   #Gear - One Hand - Wand
+    Rarity Normal
+    Class Wand
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Hide   #Gear - One Hand - Wand
+    Rarity Magic
+    Class Wand
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Two Hand - Axe
+    Rarity Normal
+    Class "Two Hand Axe"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Two Hand - Axe
+    Rarity Magic
+    Class "Two Hand Axe"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - One Hand - Axe
+    Rarity Normal
+    Class Axe
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - One Hand - Axe
+    Rarity Magic
+    Class Axe
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Hide   #Gear - One Hand - Dagger
+    Rarity Normal
+    Class Dagger
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Hide   #Gear - One Hand - Dagger
+    Rarity Magic
+    Class Dagger
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Two Hand - Sword
+    Rarity Normal
+    Class "Two Hand Sword"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Two Hand - Sword
+    Rarity Magic
+    Class "Two Hand Sword"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - One Hand - Sword - Thrusting
+    Rarity Normal
+    Class Thrusting
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - One Hand - Sword - Thrusting
+    Rarity Magic
+    Class Thrusting
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Hide   #Gear - One Hand - Sword
+    Rarity Normal
+    Class Sword
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Hide   #Gear - One Hand - Sword
+    Rarity Magic
+    Class Sword
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Two Hand - Mace
+    Rarity Normal
+    Class "Two Hand Mace"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Two Hand - Mace
+    Rarity Magic
+    Class "Two Hand Mace"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Hide   #Gear - One Hand - Mace
+    Rarity Normal
+    Class Mace
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Hide   #Gear - One Hand - Mace
+    Rarity Magic
+    Class Mace
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Hide   #Gear - One Hand - Claw
+    Rarity Normal
+    Class Claw
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Hide   #Gear - One Hand - Claw
+    Rarity Magic
+    Class Claw
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Hide   #Gear - One Hand - Sceptre
+    Rarity Normal
+    Class Sceptre
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Hide   #Gear - One Hand - Sceptre
+    Rarity Magic
+    Class Sceptre
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Armour - STR Armour
+    Rarity Normal
+    BaseType "Plate" "Greave" "Burgonet" "Plated" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Armour - STR Armour
+    Rarity Magic
+    BaseType "Plate" "Greave" "Burgonet" "Plated" "Goliath" "Gladiator" "Antique" "Vaal Gauntlet" "Titan Gauntlet" "Steel Gauntlet" "Siege" "Reaver" "Iron Gauntlet" "Hat" "Cone" "Close" "Chestplate" "Bronze Gauntlet" "Barbute" "Ancient Gauntlet" "Samite Helmet"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Armour - DEX Armour
+    Rarity Normal
+    BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Goathide" "Eelskin" "Stealth" "Slink" "Shagreen" "Rawhide" "Nubuck" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shabby" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Buckskin" "Strapped Leather" "Full Leather" "Assassin's Garb"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Armour - DEX Armour
+    Rarity Magic
+    BaseType "Tricorne" "Sharkskin" "Pelt" "Hood" "Goathide" "Eelskin" "Stealth" "Slink" "Shagreen" "Rawhide" "Nubuck" "Deerskin" "Zodiac" "Wild" "Thief" "Sun" "Shabby" "Glorious" "Frontier" "Exquisite" "Destiny" "Cutthroat" "Coronal" "Cap" "Buckskin" "Strapped Leather" "Full Leather" "Assassin's Garb"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Armour - INT Armour
+    Rarity Normal
+    BaseType "Circlet" "Robe" "Slipper" "Silk" "Vestment" "Silken" "Regalia" "Conjurer" "Wool" "Velvet" "Sorcerer" "Scholar" "Satin" "Samite" "Cage" "Arcanist" "Embroidered"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Armour - INT Armour
+    Rarity Magic
+    BaseType "Circlet" "Robe" "Slipper" "Silk" "Vestment" "Silken" "Regalia" "Conjurer" "Wool" "Velvet" "Sorcerer" "Scholar" "Satin" "Samite" "Cage" "Arcanist" "Embroidered"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Armour - STR/INT Armour
+    Rarity Normal
+    BaseType "Chainmail" "Ringmail" "Glove" "Crusader" "Crown" "Zealot" "Chain" "Riveted" "Mesh" "Legion" "Hauberk" "Great" "Soldier Boot" "Coif" "Aventail" "Soldier Helmet"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Armour - STR/INT Armour
+    Rarity Magic
+    BaseType "Chainmail" "Ringmail" "Glove" "Crusader" "Crown" "Zealot" "Chain" "Riveted" "Mesh" "Legion" "Hauberk" "Great" "Soldier Boot" "Coif" "Aventail" "Soldier Helmet"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Armour - STR/DEX Armour
+    Rarity Normal
+    BaseType "Gauntlet" "Brigandine" "Wyrmscale" "Dragonscale" "Scale" "Sallet" "Lamellar" "Helm" "Full" "Bascinet" "Steelscale" "Serpentscale" "Ironscale" "Hydrascale" "Bronzescale" "Leatherscale" "Helmet"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Armour - STR/DEX Armour
+    Rarity Magic
+    BaseType "Gauntlet" "Brigandine" "Wyrmscale" "Dragonscale" "Scale" "Sallet" "Lamellar" "Helm" "Full" "Bascinet" "Steelscale" "Serpentscale" "Ironscale" "Hydrascale" "Bronzescale" "Leatherscale" "Helmet"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Armour - INT/DEX Armour
+    Rarity Normal
+    BaseType "Mask" "Boot" "Mitt" "Raiment" "Oiled" "Jacket" "Coat" "Armour" "Padded" "Waxed" "Sadist" "Lacquered"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Armour - INT/DEX Armour
+    Rarity Magic
+    BaseType "Mask" "Boot" "Mitt" "Raiment" "Oiled" "Jacket" "Coat" "Armour" "Padded" "Waxed" "Sadist" "Lacquered"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Shield - STR Armour
+    Rarity Normal
+    Class Shield
+    BaseType "Tower"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Shield - STR Armour
+    Rarity Magic
+    Class Shield
+    BaseType "Tower"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Shield - DEX Armour
+    Rarity Normal
+    Class Shield
+    BaseType "Buckler"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Shield - DEX Armour
+    Rarity Magic
+    Class Shield
+    BaseType "Buckler"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Shield - INT Armour
+    Rarity Normal
+    Class Shield
+    BaseType "Spirit"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Shield - INT Armour
+    Rarity Magic
+    Class Shield
+    BaseType "Spirit"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Shield - STR/INT Armour
+    Rarity Normal
+    Class Shield
+    BaseType "Kite"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Shield - STR/INT Armour
+    Rarity Magic
+    Class Shield
+    BaseType "Kite"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Shield - STR/DEX Armour
+    Rarity Normal
+    Class Shield
+    BaseType "Round"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Shield - STR/DEX Armour
+    Rarity Magic
+    Class Shield
+    BaseType "Round"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+Show   #Gear - Shield - INT/DEX Armour
+    Rarity Normal
+    Class Shield
+    BaseType "Spike"
+    SetTextColor 190 190 190           #Normal "Junk"
+
+Show   #Gear - Shield - INT/DEX Armour
+    Rarity Magic
+    Class Shield
+    BaseType "Spike"
+    SetTextColor 120 120 230           #Magic "Junk"
+
+
+# Section: END OF SCALING FILTER - 001s
+### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+###                      END OF SCALING FILTER
+### Stop here.  If you deleted everything above, items that are hidden
+### will still have a dim text when the keypickup button is pressed.
+### If you do not wish to dim text on hidden items, just replace everything
+### below this line with "Hide"
+### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+### 000t
+Hide   #Obsolete
+    Rarity <= Magic
+    SetBackgroundColor 0 0 0 0         #Hidden Obsolete Gear Opacity
+    SetFontSize 34
+
+# vim: set et ts=4 sw=4 ai:

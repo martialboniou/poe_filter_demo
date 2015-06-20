@@ -7,7 +7,7 @@ import re
 import fileinput
 import sys
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import (QTreeView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox)
+from PyQt5.QtWidgets import (QTreeView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox, QCheckBox)
 from PyQt5.QtGui import *
 #requires: PyQt5, pygments
 
@@ -46,18 +46,14 @@ class Classy_Smoother_Gui(QMainWindow):
 	def initUI(self):
 		data_found = False
 		try:
-			self.file_content = fileinput.input(sys.argv[1])
-			self.file_content[0]
-			self.file_info = QFileInfo(sys.argv[1])
+			self.__getFileinfo(sys.argv[1])
 		except (IndexError, FileNotFoundError):
 			directory = QStandardPaths.standardLocations(QStandardPaths.DocumentsLocation)[0]
 			directory += "/My Games/Path of Exile"
 			fname = QFileDialog.getOpenFileName(None, 'Open file', directory)
 			if fname[0]:
 				try:
-					self.file_content = fileinput.input(fname[0])
-					self.file_content[0]
-					self.file_info = QFileInfo(fname[0])
+					self.__getFileinfo(fname[0])
 				except FileNotFoundError:
 					pass
 				else:
@@ -77,7 +73,12 @@ class Classy_Smoother_Gui(QMainWindow):
 		self.overwriteButton.setStyleSheet("background-color: #EFC795")
 		self.overwriteButton.setEnabled(False)
 		self.overwriteButton.clicked.connect(self.overwrite)
+		self.forceCheckBox = QCheckBox("&Always inherit")
+		self.forceCheckBox.setToolTip('Smartblocks inherit from virtual blockgroups.<br/>Check me to change from a <b>smartblock</b> parent.')
 		hbox = QHBoxLayout()
+		hbox2 = QHBoxLayout()
+		hbox2.addWidget(self.forceCheckBox)
+		hbox.addLayout(hbox2)
 		hbox.addStretch(1)
 		hbox.addWidget(self.overwriteButton)
 		hbox.addWidget(self.resetButton)
@@ -93,9 +94,11 @@ class Classy_Smoother_Gui(QMainWindow):
 		self.scrollLayout.addRow(self.view)
 		self.centralWidget().setLayout(vbox)
 		self.model = SmartblockModel(self.file_content, self)
+		self.forceCheckBox.stateChanged.connect(self.switchforce)
 		self.view.setModel(self.model)
 		self.view.expandAll()
 		self.view.setAlternatingRowColors(True)
+		self.setFixedSize(300, 600)
 		self.show()
 
 	def inform(self, flag, external_call = False, end_process = False):
@@ -115,22 +118,26 @@ class Classy_Smoother_Gui(QMainWindow):
 		self.resetButton.setEnabled(reset_flag)
 		self.overwriteButton.setEnabled(flag)
 
+	def switchforce(self, state):
+		self.model.forceInheritance = state == Qt.Checked
+
 	def overwrite(self):
 		self.overwriteButton.setEnabled(False)
 		self.resetButton.setEnabled(False) # TODO: disable from elsewhere ?!
 		if self.model.save(self.file_info.absoluteFilePath()):
 			self.inform(False, False, True)
 
-	def debug(self):
-		self.model.debug()
-
 	def reset(self):
 		self.model.resetStatus()
 
+	def __getFileinfo(self, filename):
+		self.file_content = ''.join(fileinput.input(filename))
+		self.file_info = QFileInfo(filename)
+
 class SmartblockData():
 
-	def __init__(self, lines = ['']):
-		self.content = ''.join(lines)
+	def __init__(self, lines = ''):
+		self.content = lines
 		self._smartblocks = []
 		self._known_states = []
 		self.caller = None
@@ -266,9 +273,11 @@ class SmartblockModel(QAbstractItemModel):
 		super(SmartblockModel, self).__init__(inParent)
 		self.data = SmartblockData(data)
 		self.window = inParent
+		self.forceInheritance = False
 		self.smartblocks = self.create_smartblocks()
 		self.rootItem = RootTreeItem()
 		self.setupModelData()
+		self.__resetCall = False
 		self.__critical_message = '''Fatal error: inform the maintainer'''
 
 	def informWindow(self, **kwargs):
@@ -340,7 +349,7 @@ class SmartblockModel(QAbstractItemModel):
 		smartblock = tree_item.smartblock
 		if smartblock.status is None:
 			for key in keywords:
-				if all(n.status == key for n in node.children):
+				if all(n.status == key for n in node.all_children): # IMPORTANT: all_children!
 					tree_item.smartblock.status = key
 					break
 
@@ -395,19 +404,24 @@ class SmartblockModel(QAbstractItemModel):
 	def data(self, index, role):
 		if not index.isValid():
 			return QVariant()
-		parent_item = index.internalPointer()
+		node = index.internalPointer()
+		col = index.column()
 		if role == Qt.DisplayRole:
-			data = parent_item.Data(index.column())
+			data = node.Data(col)
 			return data
 		if role == Qt.CheckStateRole:
-			if parent_item.Status(index.column()) is None:
+			if node.Status(col) is None:
 				return QVariant(Qt.PartiallyChecked)
-			if parent_item.Status(index.column()) == keywords[0]:
+			if node.Status(col) == keywords[0]:
 				return QVariant(Qt.Checked)
 			else:
 				return QVariant(Qt.Unchecked)
 		if role == Qt.SizeHintRole:
 			return QSize(20, 20)
+		if role == Qt.FontRole and node.Index(col) is None:
+			font = QFont()
+			font.setBold(True)
+			return QVariant(font)
 		return QVariant()
 
 	def setData(self, index, value, role):
@@ -424,7 +438,7 @@ class SmartblockModel(QAbstractItemModel):
 					parent_index = self.parent(index)
 					if parent_index.isValid():
 						self.dataChanged.emit(parent_index, index)
-					# propagate to children
+					# propagate to children if not reset
 					self.emitDataChangedForChildren(index)
 					break
 		status, hidden = 'changed', False
@@ -444,29 +458,6 @@ class SmartblockModel(QAbstractItemModel):
 				self.emitDataChangedForChildren(child_index)
 				self.dataChanged.emit(index, child_index)
 
-	def refreshData(self, index, new_status, internalCall = False):
-		node = index.internalPointer()
-		col = index.column() # unused; for evolution purpose
-		if isinstance(node, SmartblockTreeItem):
-			inode = node.Index(col)
-			status = node.Status(col)
-			count = self.rowCount(index)
-			if inode is not None:
-				if status is not None:
-					node.SetStatus(new_status, col) # + update parent
-					if inode in self.updates:
-						self.updates.remove(inode)
-						self.indexes.remove(index)
-					else:
-						self.updates.add(inode)
-						self.indexes.add(index)
-				if not internalCall:
-					return # ie update ALL children iff source is a virtual group
-			if count:
-				for child_row in range(0, count):
-					child_index = self.index(child_row, col, index)
-					self.refreshData(child_index, new_status, True)
-
 	def flags(self, index):
 		if index.column() == 0:
 			return QAbstractItemModel.flags(self, index) | Qt.ItemIsUserCheckable
@@ -478,6 +469,31 @@ class SmartblockModel(QAbstractItemModel):
 			except IndexError:
 				pass
 			return QVariant()
+
+	def refreshData(self, index, new_status, internalCall = False):
+		node = index.internalPointer()
+		col = index.column() # unused; for evolution purpose
+		if isinstance(node, SmartblockTreeItem):
+			inode = node.Index(col)
+			status = node.Status(col)
+			count = self.rowCount(index)
+			if inode is not None:
+				if status is not None:
+					if node.SetStatus(new_status, col): # + update parent
+						if inode in self.updates:
+							self.updates.remove(inode)
+							self.indexes.remove(index)
+						else:
+							self.updates.add(inode)
+							self.indexes.add(index)
+				if self.__resetCall:
+					return # simple change on reset (don't ever touch the children!)
+				if not internalCall and not self.forceInheritance: # + inode is not None
+					return	# ie forceInheritance updates ALL children
+			if count:
+				for child_row in range(0, count):
+					child_index = self.index(child_row, col, index)
+					self.refreshData(child_index, new_status, True)
 
 	def save(self, filename):
 		if self.data.update(self.updates):
@@ -495,13 +511,17 @@ class SmartblockModel(QAbstractItemModel):
 
 	def resetStatus(self):
 		# FIXME: disconnect self.window.view
+		self.__resetCall = True
 		role = Qt.CheckStateRole
 		for index in self.indexes.copy():
 			state = self.itemData(index)[role]
 			new_state = Qt.Unchecked if state == Qt.Checked else Qt.Checked
 			self.setData(index, new_state, role)
-		self.indexes = set({})
-		self.updates = set({})
+		if not self.updates:
+			self.indexes = set({})
+		else:
+			self.informWindow(critical = '''bad status\nerror in {0}'''.format(self.resetStatus.__name__))
+		self.__resetCall = False
 
 class BaseTreeItem(object):
 	def __init__(self, inParentItem):
@@ -559,12 +579,14 @@ class SmartblockTreeItem(BaseTreeItem):
 		raise ValueError('no status')
 
 	def SetStatus(self, status, inColumn):
+		changed = False
 		if inColumn == 0 and not isinstance(self, RootTreeItem):
-			self.smartblock.updateStatus(status)
+			changed = self.smartblock.updateStatus(status)
 			# update parent display
 			self._UpdateParent(inColumn)
 		else:
 			raise ValueError('no status')
+		return changed
 
 	def _UpdateParent(self, inColumn):
 		parent = self.GetParent()
@@ -622,6 +644,8 @@ class Smartblock():
 	def updateStatus(self, status):
 		if self.status != status:
 			self.status = status
+			return True
+		return False
 
 	def count(self):
 		return len(self.children)
