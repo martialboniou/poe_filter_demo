@@ -418,10 +418,8 @@ class SmartblockModel(QAbstractItemModel):
 					[Qt.Checked, Qt.Unchecked],
 					keywords):
 				if value == checkSymbol:
-					# refresh updates
-					self.refreshUpdates(index, keyword)
-					# change status
-					index.internalPointer().SetStatus(keyword, index.column())
+					# refresh status and set updates
+					self.refreshData(index, keyword)
 					# propagate to parent
 					parent_index = self.parent(index)
 					if parent_index.isValid():
@@ -446,26 +444,28 @@ class SmartblockModel(QAbstractItemModel):
 				self.emitDataChangedForChildren(child_index)
 				self.dataChanged.emit(index, child_index)
 
-	def refreshUpdates(self, index, new_status):
+	def refreshData(self, index, new_status, internalCall = False):
 		node = index.internalPointer()
+		col = index.column() # unused; for evolution purpose
 		if isinstance(node, SmartblockTreeItem):
-			inode = node.smartblock.index
-			name = node.smartblock.name
-			status = node.smartblock.status
+			inode = node.Index(col)
+			status = node.Status(col)
 			count = self.rowCount(index)
-			if inode is not None and status is not None and status != new_status:
-				if inode in self.updates:
-					self.updates.remove(inode)
-					self.indexes.remove(index)
-				else:
-					self.updates.add(inode)
-					self.indexes.add(index)
-				return
+			if inode is not None:
+				if status is not None:
+					node.SetStatus(new_status, col) # + update parent
+					if inode in self.updates:
+						self.updates.remove(inode)
+						self.indexes.remove(index)
+					else:
+						self.updates.add(inode)
+						self.indexes.add(index)
+				if not internalCall:
+					return # ie update ALL children iff source is a virtual group
 			if count:
 				for child_row in range(0, count):
-					child_index = self.index(child_row, index.column(), index)
-					# refresh children updates if inode is None (ie virtual parent)
-					self.refreshUpdates(child_index, new_status)
+					child_index = self.index(child_row, col, index)
+					self.refreshData(child_index, new_status, True)
 
 	def flags(self, index):
 		if index.column() == 0:
@@ -561,29 +561,28 @@ class SmartblockTreeItem(BaseTreeItem):
 	def SetStatus(self, status, inColumn):
 		if inColumn == 0 and not isinstance(self, RootTreeItem):
 			self.smartblock.updateStatus(status)
-			# update parent
-			parent = self.GetParent()
-			if not isinstance(parent, RootTreeItem):
-				if parent.smartblock.index is None:
-					found = False
-					for key in keywords:
-						if all(child.status == key for child in parent.smartblock.children):
-							parent.SetStatus(key, inColumn)
-							found = True
-							break
-					if not found:
-						parent.SetStatus(None, inColumn)
-			# update children
-			if self.smartblock.index is None:
-				self.__SetChildStatus(status)
+			# update parent display
+			self._UpdateParent(inColumn)
 		else:
 			raise ValueError('no status')
 
-	def __SetChildStatus(self, status):
-		if status in keywords:
-			for child in self.children:
-				child.__SetChildStatus(status)
-				child.smartblock.updateStatus(status)
+	def _UpdateParent(self, inColumn):
+		parent = self.GetParent()
+		if isinstance(parent, RootTreeItem):
+			return
+		parent_index = parent.Index(inColumn)
+		if parent_index is None:
+			found = False
+			children = parent
+			for key in keywords:
+				children = parent.smartblock.all_children # IMPORTANT: check all heirs!
+				if all(child.status == key for child in children):
+					parent.smartblock.updateStatus(key)
+					found = True
+					break
+			if not found:
+				parent.smartblock.updateStatus(None)
+		parent._UpdateParent(inColumn)
 
 	def Index(self, inColumn):
 		if inColumn == 0:
@@ -593,19 +592,36 @@ class SmartblockTreeItem(BaseTreeItem):
 class Smartblock():
 
 	def __init__(self, inIndex, inSmartblockData):
-		self.children = []
+		self.__children = []
 		self.status = inSmartblockData[0]
 		self.name = inSmartblockData[1]
-		self.index = inIndex
+		self.index = inIndex # None if virtual group
 
-	def addChild(self, inSmartblock):
-		self.children.append(inSmartblock)
+	@property
+	def children(self):
+		return self.__children
+
+	@children.setter
+	def children(self, inSmartblock):
+		self.__children.append(inSmartblock)
+
+	def addChild(self, inSmartblock): # interface
+		self.children = inSmartblock
+
+	@property
+	def heirs(self):
+	# get subchildren when no virtual group (as siblings)
+		children = self.children
+		for child in self.children:
+			if child.index is not None:
+				children = child.heirs + children
+		return children
+
+	all_children = heirs
 
 	def updateStatus(self, status):
-		# output = smartblock's index in data
 		if self.status != status:
 			self.status = status
-		return self.index
 
 	def count(self):
 		return len(self.children)
