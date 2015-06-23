@@ -6,15 +6,15 @@ This is a demo created for documentation purpose.
 Goal
 ====
 
-classy_generator
+block_generator
 ----------------
 
 - Extract `item-data` from the website of [Path Of Exile](http://www.pathofexile.com) game by Grinding Gear Games
 - Generate Awakening compatible loot filter Show blocks for crossed requirements (ie. STR/DEX, INT... in `item-data/armour`)
 - Compress item names in list by checking there's no name conflict with other databases (weapons, currency, jewelry...)
 
-classy_smoother
----------------
+simple_loot_fixer
+-----------------
 
 - replace every Smartblock header's changes in [antnee](http://www.pathofexile.com/forum/view-thread/1245785) loot filter or any other filters using a Smartblocks convention
 
@@ -36,17 +36,17 @@ Install the 3 last modules by using pip:
 Run
 ===
 
-classy_generator
-----------------
-
-    python3 classy_generator.py
-
-classy_smoother
+block_generator
 ---------------
 
-Change the Show/Hide header:
+    python3 block_generator.py
 
-    python3 classy_smoother 'Classy Item Filter'
+simple_loot_fixer
+-----------------
+
+Change the Show/Hide header comment then run:
+
+    python3 simple_loot_fixer 'Classy Item Filter'
 
 Test
 ====
@@ -56,11 +56,11 @@ Test
 Standalone (Windows Only)
 =========================
 
-    python3 standalone.py classy_smoother
+    python3 standalone.py simple_loot_fixer
 
 To share with an another player:
 
-    python3 standalone.py 1 classy_smoother
+    python3 standalone.py 1 simple_loot_fixer
 
 This will generate a large executable file including your version of `python3x.dll`. You may chain several filenames in the command line (with or without the `.py` extension). More info:
 

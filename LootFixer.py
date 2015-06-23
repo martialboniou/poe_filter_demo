@@ -7,7 +7,7 @@ import re
 import fileinput
 import sys
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import (QTreeView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox, QCheckBox)
+from PyQt5.QtWidgets import (QTreeView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox, QCheckBox, QFrame, QLabel, QSizePolicy, QAbstractButton)
 from PyQt5.QtGui import *
 #requires: PyQt5, pygments
 
@@ -16,6 +16,7 @@ keywords = ('Show', 'Hide')
 reserved = '|'.join(keywords) # will be extended
 smartblock_separator = ' - '
 
+# - Lexer
 class LootFilterLexer(RegexLexer):
 	name = 'LootFilter'
 	aliases = ['lootfilter']
@@ -33,11 +34,13 @@ class LootFilterLexer(RegexLexer):
 			]
 	}
 
-class Classy_Smoother_Gui(QMainWindow):
+# - View
+class LootFixer(QMainWindow):
 
 	def __init__(self):
-		super (Classy_Smoother_Gui, self).__init__()
+		super (LootFixer, self).__init__()
 		self.hide()
+		self._upToDateMessage = 'is up-to-date'
 		self.initUI()
 
 	def kill_on_init(self):
@@ -69,21 +72,24 @@ class Classy_Smoother_Gui(QMainWindow):
 		self.resetButton = QPushButton("Reset")
 		self.resetButton.setEnabled(False)
 		self.resetButton.clicked.connect(self.reset)
+		self.orphanButton = SPushButton("+")
 		self.overwriteButton = QPushButton("Overwrite")
 		self.overwriteButton.setStyleSheet("background-color: #EFC795")
 		self.overwriteButton.setEnabled(False)
 		self.overwriteButton.clicked.connect(self.overwrite)
 		self.forceCheckBox = QCheckBox("&Always inherit")
 		self.forceCheckBox.setToolTip('Smartblocks inherit from virtual blockgroups.<br/>Check me to change from a <b>smartblock</b> parent.')
+		self.forceCheckBox.hide()
 		hbox = QHBoxLayout()
 		hbox2 = QHBoxLayout()
 		hbox2.addWidget(self.forceCheckBox)
 		hbox.addLayout(hbox2)
+		hbox.addWidget(self.orphanButton)
 		hbox.addStretch(1)
 		hbox.addWidget(self.overwriteButton)
 		hbox.addWidget(self.resetButton)
 		vbox = QVBoxLayout()
-		self.setWindowTitle('Classy Smoother GUI - Tree Edition')
+		self.setWindowTitle('Loot Fixer')
 		self.view = QTreeView()
 		self.setCentralWidget(QWidget())
 		self.scrollLayout = QFormLayout()
@@ -94,11 +100,12 @@ class Classy_Smoother_Gui(QMainWindow):
 		self.scrollLayout.addRow(self.view)
 		self.centralWidget().setLayout(vbox)
 		self.model = SmartblockModel(self.file_content, self)
+		self.statusBar().showMessage(self.file_info.fileName() + ' ' + self._upToDateMessage)
 		self.forceCheckBox.stateChanged.connect(self.switchforce)
 		self.view.setModel(self.model)
 		self.view.expandAll()
 		self.view.setAlternatingRowColors(True)
-		self.setFixedSize(300, 600)
+		self.resize(300, 600)
 		self.show()
 
 	def inform(self, flag, external_call = False, end_process = False):
@@ -113,10 +120,14 @@ class Classy_Smoother_Gui(QMainWindow):
 			if end_process:
 				message = 'is saved'
 			else:
-				message = 'is up-to-date'
+				message = self._upToDateMessage
 		self.statusBar().showMessage(self.file_info.fileName() + ' ' + message)
 		self.resetButton.setEnabled(reset_flag)
 		self.overwriteButton.setEnabled(flag)
+
+	def displayInheritance(self, display = True):
+		if display:
+			self.forceCheckBox.show()
 
 	def switchforce(self, state):
 		self.model.forceInheritance = state == Qt.Checked
@@ -134,146 +145,30 @@ class Classy_Smoother_Gui(QMainWindow):
 		self.file_content = ''.join(fileinput.input(filename))
 		self.file_info = QFileInfo(filename)
 
-class SmartblockData():
+class SPushButton(QPushButton):
 
-	def __init__(self, lines = ''):
-		self.content = lines
-		self._smartblocks = []
-		self._known_states = []
-		self.caller = None
-		self.lexer = None
+	def __init__(self, label = '', parent = None):
+		super(SPushButton, self).__init__(label)
+		self.setMinimumWidth(23)
+		self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
 
-	@property
-	def lexer(self):
-		return self.__lexer
+	def resizeEvent(self, e):
+		size = QSize(10, 10)
+		size.scale(e.size(), Qt.KeepAspectRatio)
+		self.setMinimumWidth(self.height())
+		self.resize(size)
 
-	@lexer.setter
-	def lexer(self, value):
-		self.__lexer = value
-		self.__known_header = False
-		self.__known_data = False
-		self.updates = set({}) # smartblocks indexes to repair
-
-	def get_smartblocks(self):
-		if self.lexer is None:
-			return []
-		if not self.__known_header:
-			self._smartblocks = []
-			self._known_states = []
-			self.block_locations = defaultdict(list)
-			k_lens = (len(keywords[0]), len(keywords[1]))
-			self.walker = iter(self.lexer.get_tokens_unprocessed(self.content))
-			offset = 0
-			# walk through the comment header (stop at the first Show/Hide block)
-			# one rule: smartblocks precede Show/Hide blocks
-			while True:
-				try:
-					index, tokenType, tokenValue = self.walker.__next__()
-				except StopIteration:
-					break
-				if tokenType == Token.Comment.Single:
-					m = re.match("#+\s+({0})\s*(#.*)".format(reserved), tokenValue)
-					if m is not None:
-						try:
-							local_index = m.start(1)
-							local_state, local_smartblock = m.group(1), m.group(2)
-						except IndexError:
-							pass # hmm
-						else:
-							local_smartblock = local_smartblock.strip() # remove whitespaces left by bad editors
-							self._smartblocks.append(local_smartblock)
-							self._known_states.append(local_state)
-							self.block_locations[local_smartblock] = [index + local_index]
-				if tokenType == Token.Keyword.Reserved and tokenValue in keywords:
-					break
-			self.__known_header = True
-		return zip(self._known_states, self._smartblocks)
-
-	def fetch_data(self):
-		if not self.__known_header:
-			self.get_smartblocks()
-		if self.__known_data:
-			return
-		index, tokenType, tokenValue = next(self.walker)
-		# walk through the Show/Hide blocks
-		while True:
-			if tokenType == Token.Keyword.Reserved and tokenValue in keywords:
-				try:
-					self.walker.__next__() # Space
-					_, tokenType, nextTokenValue = self.walker.__next__() # Comment
-				except StopIteration:
-					break
-				nextTokenValue = nextTokenValue.strip() # remove whitespaces left by bad editors
-				if tokenType == Token.Comment.Single and nextTokenValue in self._smartblocks:
-					self.block_locations[nextTokenValue].append(index)
-					# ensure the Show/Hide block is as declared
-					if tokenValue != self._known_states[self._smartblocks.index(nextTokenValue)]:
-						self.updates.add(self._smartblocks.index(nextTokenValue))
-			try:
-				index, tokenType, tokenValue = self.walker.__next__()
-			except StopIteration:
-				break
-		self.__known_data = True
-
-	def get_locations(self, index):
-		try:
-			key = self._smartblocks[index]
-		except IndexError:
-			return []
-		return self.block_locations[key]
-
-	def update(self, updates):
-		if not self.__known_data:
-			self.fetch_data()
-		tag_positions = defaultdict(list)
-		new_states = self._known_states.copy()
-		# normal update
-		for i in updates:
-			# update known states
-			if new_states[i] == keywords[0]:
-				new_states[i] = keywords[1]
-			else:
-				new_states[i] = keywords[0]
-			tag_positions[new_states[i]].extend(self.get_locations(i))
-		# repair case
-		for i in self.updates - updates:
-			test = tag_positions[self._known_states[i]]
-			test.extend(self.get_locations(i))
-		# reset when update ok
-		if self.update_content(tag_positions):
-			self.updates = set({})
-			self._known_states = new_states
-			return True
-		return False
-
-	def update_content(self, tag_positions):
-		# tag_positions: new_label -> [positions]
-		# FIXME: hide and show => same size / no offset implemented
-		content = list(self.content) # as mutable string; TODO: use bytearray ASAP
-		for label in keywords:
-			previous_label = keywords[1] if label == keywords[0] else keywords[0]
-			p_len = len(previous_label)
-			for pos in tag_positions[label][::-1]: # reverse => no offset per cycle
-				for _ in range(0, p_len):
-					try:
-						content.pop(pos)
-					except IndexError:
-						return False
-				for c in label[::-1]:
-					try:
-						content.insert(pos,c)
-					except IndexError:
-						return False
-		self.content = ''.join(content)
-		return True
-
+# - Model
 class SmartblockModel(QAbstractItemModel):
 
 	def __init__(self, data, inParent = None):
 		super(SmartblockModel, self).__init__(inParent)
 		self.data = SmartblockData(data)
 		self.window = inParent
+		# out of Muldini's Blockgroup Convention
+		self.specialSmartblock = False # unofficial smartblock parent support
 		self.forceInheritance = False
+		# end - out
 		self.smartblocks = self.create_smartblocks()
 		self.rootItem = RootTreeItem()
 		self.setupModelData()
@@ -343,6 +238,8 @@ class SmartblockModel(QAbstractItemModel):
 
 	def __processData(self, tree_item, node):
 		for d in node.children:
+			if d.isBadParent():
+				self.specialSmartblock = True
 			item = SmartblockTreeItem(tree_item, d)
 			self.__processData(item, d) # process children first then update status
 			tree_item.AddChild(item)
@@ -355,11 +252,15 @@ class SmartblockModel(QAbstractItemModel):
 
 	def setupModelData(self):
 		for smart in self.smartblocks:
+			if smart.isBadParent():
+				self.specialSmartblock = True
 			smart_item = SmartblockTreeItem(self.rootItem, smart)
 			self.__processData(smart_item, smart)
 			self.rootItem.AddChild(smart_item)
 			self.updates = set({}) # collect indexes of smartblocks to update (faster)
 			self.indexes = set({}) # collect indexes in tree model to reset   (faster)
+			if self.specialSmartblock and self.window is not None:
+				self.window.displayInheritance()
 
 	def index(self, row, column, parentindex):
 		if not self.hasIndex(row, column, parentindex):
@@ -523,6 +424,7 @@ class SmartblockModel(QAbstractItemModel):
 			self.informWindow(critical = '''bad status\nerror in {0}'''.format(self.resetStatus.__name__))
 		self.__resetCall = False
 
+# - Model - Item
 class BaseTreeItem(object):
 	def __init__(self, inParentItem):
 		self.parent = inParentItem
@@ -611,6 +513,141 @@ class SmartblockTreeItem(BaseTreeItem):
 			return self.smartblock.index
 		raise IndexError('no index')
 
+# - Data
+class SmartblockData():
+
+	def __init__(self, lines = ''):
+		self.content = lines
+		self._smartblocks = []
+		self._known_states = []
+		self.caller = None
+		self.lexer = None
+
+	@property
+	def lexer(self):
+		return self.__lexer
+
+	@lexer.setter
+	def lexer(self, value):
+		self.__lexer = value
+		self.__known_header = False
+		self.__known_data = False
+		self.updates = set({}) # smartblocks indexes to repair
+
+	def get_smartblocks(self):
+		if self.lexer is None:
+			return []
+		if not self.__known_header:
+			self._smartblocks = []
+			self._known_states = []
+			self.block_locations = defaultdict(list)
+			k_lens = (len(keywords[0]), len(keywords[1]))
+			self.walker = iter(self.lexer.get_tokens_unprocessed(self.content))
+			offset = 0
+			# walk through the comment header (stop at the first Show/Hide block)
+			# one rule: smartblocks precede Show/Hide blocks
+			while True:
+				try:
+					index, tokenType, tokenValue = self.walker.__next__()
+				except StopIteration:
+					break
+				if tokenType == Token.Comment.Single:
+					m = re.match("#+\s+({0})\s*(#.*)".format(reserved), tokenValue)
+					if m is not None:
+						try:
+							local_index = m.start(1)
+							local_state, local_smartblock = m.group(1), m.group(2)
+						except IndexError:
+							pass # hmm
+						else:
+							local_smartblock = local_smartblock.strip() # remove whitespaces left by bad editors
+							self._smartblocks.append(local_smartblock)
+							self._known_states.append(local_state)
+							self.block_locations[local_smartblock] = [index + local_index]
+				if tokenType == Token.Keyword.Reserved and tokenValue in keywords:
+					break
+			self.__known_header = True
+		return zip(self._known_states, self._smartblocks)
+
+	def fetch_data(self):
+		if not self.__known_header:
+			self.get_smartblocks()
+		if self.__known_data:
+			return
+		index, tokenType, tokenValue = next(self.walker)
+		# walk through the Show/Hide blocks
+		while True:
+			if tokenType == Token.Keyword.Reserved and tokenValue in keywords:
+				try:
+					self.walker.__next__() # Space
+					_, tokenType, nextTokenValue = self.walker.__next__() # Comment
+				except StopIteration:
+					break
+				nextTokenValue = nextTokenValue.strip() # remove whitespaces left by bad editors
+				if tokenType == Token.Comment.Single and nextTokenValue in self._smartblocks:
+					self.block_locations[nextTokenValue].append(index)
+					# ensure the Show/Hide block is as declared
+					if tokenValue != self._known_states[self._smartblocks.index(nextTokenValue)]:
+						self.updates.add(self._smartblocks.index(nextTokenValue))
+			try:
+				index, tokenType, tokenValue = self.walker.__next__()
+			except StopIteration:
+				break
+		self.__known_data = True
+
+	def get_locations(self, index):
+		try:
+			key = self._smartblocks[index]
+		except IndexError:
+			return []
+		return self.block_locations[key]
+
+	def update(self, updates):
+		if not self.__known_data:
+			self.fetch_data()
+		tag_positions = defaultdict(list)
+		new_states = self._known_states.copy()
+		# normal update
+		for i in updates:
+			# update known states
+			if new_states[i] == keywords[0]:
+				new_states[i] = keywords[1]
+			else:
+				new_states[i] = keywords[0]
+			tag_positions[new_states[i]].extend(self.get_locations(i))
+		# repair case
+		for i in self.updates - updates:
+			test = tag_positions[self._known_states[i]]
+			test.extend(self.get_locations(i))
+		# reset when update ok
+		if self.update_content(tag_positions):
+			self.updates = set({})
+			self._known_states = new_states
+			return True
+		return False
+
+	def update_content(self, tag_positions):
+		# tag_positions: new_label -> [positions]
+		# FIXME: hide and show => same size / no offset implemented
+		content = list(self.content) # as mutable string; TODO: use bytearray ASAP
+		for label in keywords:
+			previous_label = keywords[1] if label == keywords[0] else keywords[0]
+			p_len = len(previous_label)
+			for pos in tag_positions[label][::-1]: # reverse => no offset per cycle
+				for _ in range(0, p_len):
+					try:
+						content.pop(pos)
+					except IndexError:
+						return False
+				for c in label[::-1]:
+					try:
+						content.insert(pos,c)
+					except IndexError:
+						return False
+		self.content = ''.join(content)
+		return True
+
+# - Data - Item
 class Smartblock():
 
 	def __init__(self, inIndex, inSmartblockData):
@@ -618,6 +655,10 @@ class Smartblock():
 		self.status = inSmartblockData[0]
 		self.name = inSmartblockData[1]
 		self.index = inIndex # None if virtual group
+
+	def isBadParent(self):
+		# unofficial: real smartblock as virtual node
+		return self.index is not None and len(self.children) > 0
 
 	@property
 	def children(self):
@@ -632,7 +673,7 @@ class Smartblock():
 
 	@property
 	def heirs(self):
-	# get subchildren when no virtual group (as siblings)
+		# unofficial: get subchildren when no virtual group (as siblings)
 		children = self.children
 		for child in self.children:
 			if child.index is not None:
@@ -659,5 +700,5 @@ class Smartblock():
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
-	csg = Classy_Smoother_Gui()
+	lf = LootFixer()
 	sys.exit(app.exec_())

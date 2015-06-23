@@ -30,7 +30,7 @@ class Color:
 	def __str__(self):
 		return ' '.join(str(c) for c in self.get_color())
 
-class ClassyGenerator:
+class BlockGenerator:
 	__default_output_filename = 'filter.txt'
 	__template = 3*' '+"""#Gear - {requirement} {category_name}{option}
 	Rarity {rarity}
@@ -194,7 +194,7 @@ class ClassyGenerator:
 		return 0
 
 if __name__ == '__main__':
-	# generate code for the Antnee's Classy Filter
-	classy = ClassyGenerator('antnee')
-	status = classy.run(output_filename)
+	# this demo generate the armour/shield blocks for the Antnee's Classy Filter
+	demo = BlockGenerator('antnee')
+	status = demo.run(output_filename)
 	exit(status)
