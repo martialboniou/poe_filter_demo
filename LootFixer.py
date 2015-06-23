@@ -519,6 +519,7 @@ class SmartblockData():
 	def __init__(self, lines = ''):
 		self.content = lines
 		self._smartblocks = []
+		self._orphans = []
 		self._known_states = []
 		self.caller = None
 		self.lexer = None
@@ -584,10 +585,12 @@ class SmartblockData():
 				except StopIteration:
 					break
 				nextTokenValue = nextTokenValue.strip() # remove whitespaces left by bad editors
-				if tokenType == Token.Comment.Single and nextTokenValue in self._smartblocks:
+				if tokenType == Token.Comment.Single:
 					self.block_locations[nextTokenValue].append(index)
+					if nextTokenValue not in self._smartblocks and nextTokenValue not in self._orphans: # collect orphans too
+						self._orphans.append(nextTokenValue)
 					# ensure the Show/Hide block is as declared
-					if tokenValue != self._known_states[self._smartblocks.index(nextTokenValue)]:
+					if nextTokenValue in self._smartblocks and tokenValue != self._known_states[self._smartblocks.index(nextTokenValue)]:
 						self.updates.add(self._smartblocks.index(nextTokenValue))
 			try:
 				index, tokenType, tokenValue = self.walker.__next__()
