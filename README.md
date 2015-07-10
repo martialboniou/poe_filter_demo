@@ -6,6 +6,13 @@ This is a demo created for documentation purpose.
 Goal
 ====
 
+LootWizard
+----------
+
+- Graphic Smartblock switcher (including tree view); see the [Antnee's Classy Item Filter](https://www.pathofexile.com/forum/view-thread/1245785)
+- [Filtration](https://github.com/ben-wallis/Filtration) displays all blockgroups as they appeared in the loot filter, LootWizard only shows the blockgroups listed in the header comment (in the order chosen by loot filter creator)
+- *Coming soon*: Display unreferenced blockgroups (smartblocks not written in the header comment may be changed then)
+
 block_generator
 ----------------
 
@@ -13,10 +20,10 @@ block_generator
 - Generate Awakening compatible loot filter Show blocks for crossed requirements (ie. STR/DEX, INT... in `item-data/armour`)
 - Compress item names in list by checking there's no name conflict with other databases (weapons, currency, jewelry...)
 
-simple_loot_fixer
------------------
+simple_loot_wizard
+------------------
 
-- replace every Smartblock header's changes in [antnee](http://www.pathofexile.com/forum/view-thread/1245785) loot filter or any other filters using a Smartblocks convention
+- Replace every Smartblock header's changes in [Antnee's Classy Item Filter](http://www.pathofexile.com/forum/view-thread/1245785) or any other filters using the [Muldini](https://www.reddit.com/r/pathofexile/comments/352vy0/loot_filter_one_filter_to_rule_them_all)'s convention
 
 Requirement
 ===========
@@ -36,17 +43,22 @@ Install the 3 last modules by using pip:
 Run
 ===
 
+LootWizard
+----------
+
+    python3 LootWizard.py
+
 block_generator
 ---------------
 
     python3 block_generator.py
 
-simple_loot_fixer
------------------
+simple_loot_wizard
+------------------
 
 Change the Show/Hide header comment then run:
 
-    python3 simple_loot_fixer 'Classy Item Filter'
+    python3 simple_loot_wizard 'Classy Item Filter'
 
 Test
 ====
@@ -56,11 +68,11 @@ Test
 Standalone (Windows Only)
 =========================
 
-    python3 standalone.py simple_loot_fixer
+    python3 standalone.py simple_loot_wizard
 
 To share with an another player:
 
-    python3 standalone.py 1 simple_loot_fixer
+    python3 standalone.py 1 simple_loot_wizard
 
 This will generate a large executable file including your version of `python3x.dll`. You may chain several filenames in the command line (with or without the `.py` extension). More info:
 

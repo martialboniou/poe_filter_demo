@@ -7,7 +7,7 @@ import re
 import fileinput
 import sys
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import (QTreeView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox, QCheckBox, QFrame, QLabel, QSizePolicy, QAbstractButton)
+from PyQt5.QtWidgets import (QTreeView, QHBoxLayout, QVBoxLayout, QScrollArea, QAction, qApp, QWidget, QApplication, QMainWindow, QPushButton, QFormLayout, QFileDialog, QMessageBox, QCheckBox, QSizePolicy, QDialog)
 from PyQt5.QtGui import *
 #requires: PyQt5, pygments
 
@@ -35,10 +35,10 @@ class LootFilterLexer(RegexLexer):
 	}
 
 # - View
-class LootFixer(QMainWindow):
+class LootWizard(QMainWindow):
 
 	def __init__(self):
-		super (LootFixer, self).__init__()
+		super (LootWizard, self).__init__()
 		self.hide()
 		self._upToDateMessage = 'is up-to-date'
 		self.initUI()
@@ -72,7 +72,8 @@ class LootFixer(QMainWindow):
 		self.resetButton = QPushButton("Reset")
 		self.resetButton.setEnabled(False)
 		self.resetButton.clicked.connect(self.reset)
-		self.orphanButton = SPushButton("+")
+		self.orphanButton = SquareButton("+")
+		self.orphanButton.hide()
 		self.overwriteButton = QPushButton("Overwrite")
 		self.overwriteButton.setStyleSheet("background-color: #EFC795")
 		self.overwriteButton.setEnabled(False)
@@ -89,12 +90,14 @@ class LootFixer(QMainWindow):
 		hbox.addWidget(self.overwriteButton)
 		hbox.addWidget(self.resetButton)
 		vbox = QVBoxLayout()
-		self.setWindowTitle('Loot Fixer')
+		self.setWindowTitle('Loot Wizard')
 		self.view = QTreeView()
 		self.setCentralWidget(QWidget())
 		self.scrollLayout = QFormLayout()
 		self.scrollWidget = QWidget()
 		self.scrollWidget.setLayout(self.scrollLayout)
+		self.orphanDialog = OrphanDialog(self)
+		self.orphanButton.clicked.connect(self.openOrphans)
 		vbox.addWidget(self.view)
 		vbox.addLayout(hbox)
 		self.scrollLayout.addRow(self.view)
@@ -125,9 +128,18 @@ class LootFixer(QMainWindow):
 		self.resetButton.setEnabled(reset_flag)
 		self.overwriteButton.setEnabled(flag)
 
+	def displayOrphan(self, display = True):
+		# self.displayButton(self.orphanButton, display)
+		pass
+
 	def displayInheritance(self, display = True):
+		self.displayButton(self.forceCheckBox, display)
+
+	def displayButton(self, btn, display = True):
 		if display:
-			self.forceCheckBox.show()
+			btn.show()
+		else:
+			btn.hide()
 
 	def switchforce(self, state):
 		self.model.forceInheritance = state == Qt.Checked
@@ -145,11 +157,13 @@ class LootFixer(QMainWindow):
 		self.file_content = ''.join(fileinput.input(filename))
 		self.file_info = QFileInfo(filename)
 
-class SPushButton(QPushButton):
+	def openOrphans(self):
+		self.orphanDialog.show()
+
+class SquareButton(QPushButton):
 
 	def __init__(self, label = '', parent = None):
-		super(SPushButton, self).__init__(label)
-		self.setMinimumWidth(23)
+		super(SquareButton, self).__init__(label)
 		self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
 
 	def resizeEvent(self, e):
@@ -157,6 +171,11 @@ class SPushButton(QPushButton):
 		size.scale(e.size(), Qt.KeepAspectRatio)
 		self.setMinimumWidth(self.height())
 		self.resize(size)
+
+class OrphanDialog(QDialog):
+
+	def __init__(self, parent = None):
+		super(OrphanDialog, self).__init__(parent)
 
 # - Model
 class SmartblockModel(QAbstractItemModel):
@@ -166,7 +185,7 @@ class SmartblockModel(QAbstractItemModel):
 		self.data = SmartblockData(data)
 		self.window = inParent
 		# out of Muldini's Blockgroup Convention
-		self.specialSmartblock = False # unofficial smartblock parent support
+		self.hasSpecialSmartblock = False # unofficial smartblock parent support
 		self.forceInheritance = False
 		# end - out
 		self.smartblocks = self.create_smartblocks()
@@ -239,7 +258,7 @@ class SmartblockModel(QAbstractItemModel):
 	def __processData(self, tree_item, node):
 		for d in node.children:
 			if d.isBadParent():
-				self.specialSmartblock = True
+				self.hasSpecialSmartblock = True
 			item = SmartblockTreeItem(tree_item, d)
 			self.__processData(item, d) # process children first then update status
 			tree_item.AddChild(item)
@@ -253,14 +272,16 @@ class SmartblockModel(QAbstractItemModel):
 	def setupModelData(self):
 		for smart in self.smartblocks:
 			if smart.isBadParent():
-				self.specialSmartblock = True
+				self.hasSpecialSmartblock = True
 			smart_item = SmartblockTreeItem(self.rootItem, smart)
 			self.__processData(smart_item, smart)
 			self.rootItem.AddChild(smart_item)
 			self.updates = set({}) # collect indexes of smartblocks to update (faster)
 			self.indexes = set({}) # collect indexes in tree model to reset   (faster)
-			if self.specialSmartblock and self.window is not None:
+			if self.hasSpecialSmartblock and self.window is not None:
 				self.window.displayInheritance()
+			if self.data.hasOrphan():
+				self.window.displayOrphan()
 
 	def index(self, row, column, parentindex):
 		if not self.hasIndex(row, column, parentindex):
@@ -535,6 +556,10 @@ class SmartblockData():
 		self.__known_data = False
 		self.updates = set({}) # smartblocks indexes to repair
 
+	@property
+	def orphans(self):
+		return self._orphans
+
 	def get_smartblocks(self):
 		if self.lexer is None:
 			return []
@@ -597,6 +622,7 @@ class SmartblockData():
 			except StopIteration:
 				break
 		self.__known_data = True
+		#print(str(self._orphans))
 
 	def get_locations(self, index):
 		try:
@@ -649,6 +675,9 @@ class SmartblockData():
 						return False
 		self.content = ''.join(content)
 		return True
+
+	def hasOrphan(self):
+		return not not self._orphans
 
 # - Data - Item
 class Smartblock():
@@ -703,5 +732,5 @@ class Smartblock():
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
-	lf = LootFixer()
+	lf = LootWizard()
 	sys.exit(app.exec_())
